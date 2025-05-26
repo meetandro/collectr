@@ -1,0 +1,16 @@
+﻿using CollectR.Domain.Common;
+
+namespace CollectR.Domain;
+
+public class Tag : BaseEntity
+{
+    public string Name { get; set; } = string.Empty;
+
+    public string Hex { get; set; } = "#FFFFFF";
+
+    public int CollectionId { get; set; }
+
+    public Collection? Collection { get; set; }
+
+    public ICollection<CollectibleTag> CollectibleTags { get; set; } = [];
+}
