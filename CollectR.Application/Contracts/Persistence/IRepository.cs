@@ -2,11 +2,11 @@
 
 public interface IRepository<TEntity> where TEntity : class
 {
-    Task<IEnumerable<TEntity>> GetAllAsync();
-
     Task<TEntity?> GetByIdAsync(int id);
 
     Task<TEntity> CreateAsync(TEntity entity);
+
+    Task<IEnumerable<TEntity>> CreateRangeAsync(IEnumerable<TEntity> entities);
 
     TEntity Update(TEntity entity);
 

@@ -7,23 +7,24 @@ using CollectR.Domain;
 
 namespace CollectR.Application.Mappings;
 
-public class CategoryMappings : Profile // figure out correct mapping, p.s. figure logging
+public class CategoryMappings : Profile
 {
     public CategoryMappings()
     {
         CreateMap<CreateCategoryCommand, Category>()
             .ReverseMap();
 
-        CreateMap<GetCategoryByIdQueryResponse, Category>()
-            .ReverseMap();
+        CreateMap<Category, GetCategoryByIdQueryResponse>()
+            .ForCtorParam(nameof(GetCategoryByIdQueryResponse.CollectibleIds), opt => opt.MapFrom(src => src.Collectibles.Select(c => c.Id)));
 
         CreateMap<UpdateCategoryCommand, Category>()
-            .ReverseMap();
+    .ReverseMap();
 
-        CreateMap<UpdateCategoryCommandResponse, Category>()
-            .ReverseMap();
+CreateMap<UpdateCategoryCommandResponse, Category>()
+    .ReverseMap();
 
-        CreateMap<GetAllCategoriesQueryResponse, Category>()
-            .ReverseMap();
-    }
+    CreateMap<Category, GetAllCategoriesQueryResponse>()
+        .ForCtorParam(nameof(GetCategoryByIdQueryResponse.CollectibleIds), opt => opt.MapFrom(src => src.Collectibles.Select(c => c.Id)))
+        .ReverseMap(); // good but should you return this in the first place? IEnumerable<Response> or Response
+}
 }

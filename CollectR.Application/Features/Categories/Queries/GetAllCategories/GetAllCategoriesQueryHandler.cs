@@ -1,10 +1,12 @@
 ﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using CollectR.Application.Contracts.Persistence;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace CollectR.Application.Features.Categories.Queries.GetAllCategories;
 
-internal class GetAllCategoriesQueryHandler(ICategoryRepository categoryRepository, IMapper mapper)
+internal class GetAllCategoriesQueryHandler(IApplicationDbContext context, IMapper mapper)
     : IRequestHandler<GetAllCategoriesQuery, IEnumerable<GetAllCategoriesQueryResponse>>
 {
     public async Task<IEnumerable<GetAllCategoriesQueryResponse>> Handle(
@@ -12,8 +14,11 @@ internal class GetAllCategoriesQueryHandler(ICategoryRepository categoryReposito
         CancellationToken cancellationToken
     )
     {
-        var result = await categoryRepository.GetAllAsync(); // collectibleids
+        var result = await context.Categories
+            .AsNoTracking()
+            .ProjectTo<GetAllCategoriesQueryResponse>(mapper.ConfigurationProvider)
+            .ToListAsync(cancellationToken);
 
-        return result.Select(mapper.Map<GetAllCategoriesQueryResponse>);
+        return result;
     }
 }

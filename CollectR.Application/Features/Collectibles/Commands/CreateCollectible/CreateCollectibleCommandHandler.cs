@@ -36,7 +36,7 @@ internal class CreateCollectibleCommandHandler(
                     new Image
                     {
                         Uri = imageUri,
-                        CollectibleId = collectible.Id,
+                        Collectible = collectible
                     }
                 );
             }

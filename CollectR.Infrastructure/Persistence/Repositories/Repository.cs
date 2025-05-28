@@ -15,13 +15,6 @@ public class Repository<TEntity> : IRepository<TEntity> where TEntity : Entity
         _dbSet = _context.Set<TEntity>();
     }
 
-    public async Task<IEnumerable<TEntity>> GetAllAsync()
-    {
-        return await _dbSet
-            .Where(x => !x.IsDeleted)
-            .ToListAsync();
-    }
-
     public async Task<TEntity?> GetByIdAsync(int id)
     {
         TEntity? entity = await _dbSet.FindAsync(id);
@@ -37,6 +30,12 @@ public class Repository<TEntity> : IRepository<TEntity> where TEntity : Entity
         entity.CreatedAt = DateTime.UtcNow; // handle accordingly
         await _dbSet.AddAsync(entity);
         return entity;
+    }
+
+    public async Task<IEnumerable<TEntity>> CreateRangeAsync(IEnumerable<TEntity> entities)
+    {
+        await _dbSet.AddRangeAsync(entities);
+        return entities;
     }
 
     public TEntity Update(TEntity entity)

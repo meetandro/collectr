@@ -9,4 +9,6 @@ public class Image : Entity
     public string? Alt { get; set; }
 
     public int CollectibleId { get; set; }
+
+    public Collectible? Collectible { get; set; }
 }

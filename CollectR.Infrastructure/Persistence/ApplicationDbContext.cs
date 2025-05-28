@@ -1,10 +1,11 @@
-﻿using CollectR.Domain;
+﻿using CollectR.Application.Contracts.Persistence;
+using CollectR.Domain;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 
 namespace CollectR.Infrastructure.Persistence;
 
-public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : DbContext(options)
+public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : DbContext(options), IApplicationDbContext
 {
     public DbSet<Category> Categories { get; set; }
 

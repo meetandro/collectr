@@ -12,10 +12,11 @@ public class CollectibleMappings : Profile // sealed? internal? figure it out.
     public CollectibleMappings()
     {
         CreateMap<CreateCollectibleCommand, Collectible>()
-            .ReverseMap();
+            .ForMember(c => c.Images, opt => opt.Ignore());
 
-        CreateMap<GetCollectibleByIdQueryResponse, Collectible>()
-            .ReverseMap();
+        CreateMap<Collectible, GetCollectibleByIdQueryResponse>()
+            .ForCtorParam(nameof(GetCollectibleByIdQueryResponse.TagIds), opt => opt.MapFrom(src => src.CollectibleTags.Select(ct => ct.TagId)))
+            .ForCtorParam(nameof(GetCollectibleByIdQueryResponse.ImageUris), opt => opt.MapFrom(src => src.Images.Select(i => i.Uri)));
 
         CreateMap<UpdateCollectibleCommand, Collectible>()
             .ReverseMap();
@@ -23,7 +24,8 @@ public class CollectibleMappings : Profile // sealed? internal? figure it out.
         CreateMap<UpdateCollectibleCommandResponse, Collectible>()
             .ReverseMap();
 
-        CreateMap<GetAllCollectiblesQueryResponse, Collectible>()
-            .ReverseMap();
+        CreateMap<Collectible, GetAllCollectiblesQueryResponse>()
+            .ForCtorParam(nameof(GetCollectibleByIdQueryResponse.TagIds), opt => opt.MapFrom(src => src.CollectibleTags.Select(ct => ct.TagId)))
+            .ForCtorParam(nameof(GetCollectibleByIdQueryResponse.ImageUris), opt => opt.MapFrom(src => src.Images.Select(i => i.Uri)));
     }
 }

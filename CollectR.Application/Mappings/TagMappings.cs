@@ -14,8 +14,8 @@ public class TagMappings : Profile
         CreateMap<CreateTagCommand, Tag>()
             .ReverseMap();
 
-        CreateMap<GetTagByIdQueryResponse, Tag>()
-            .ReverseMap();
+        CreateMap<Tag, GetTagByIdQueryResponse>()
+            .ForCtorParam(nameof(GetTagByIdQueryResponse.CollectibleTagIds), opt => opt.MapFrom(src => src.CollectibleTags.Select(ct => ct.CollectibleId)));
 
         CreateMap<UpdateTagCommand, Tag>()
             .ReverseMap();
@@ -23,7 +23,7 @@ public class TagMappings : Profile
         CreateMap<UpdateTagCommandResponse, Tag>()
             .ReverseMap();
 
-        CreateMap<GetAllTagsQueryResponse, Tag>()
-            .ReverseMap();
+        CreateMap<Tag, GetAllTagsQueryResponse>()
+            .ForCtorParam(nameof(GetAllTagsQueryResponse.CollectibleTagIds), opt => opt.MapFrom(src => src.CollectibleTags.Select(ct => ct.CollectibleId)));
     }
 }

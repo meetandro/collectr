@@ -1,10 +1,13 @@
 ﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using CollectR.Application.Contracts.Persistence;
+using CollectR.Application.Exceptions;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace CollectR.Application.Features.Categories.Queries.GetCategoryById;
 
-internal class GetCategoryByIdQueryHandler(ICategoryRepository categoryRepository, IMapper mapper)
+internal class GetCategoryByIdQueryHandler(IApplicationDbContext context, IMapper mapper)
     : IRequestHandler<GetCategoryByIdQuery, GetCategoryByIdQueryResponse>
 {
     public async Task<GetCategoryByIdQueryResponse> Handle(
@@ -12,9 +15,12 @@ internal class GetCategoryByIdQueryHandler(ICategoryRepository categoryRepositor
         CancellationToken cancellationToken
     )
     {
-        var category = await categoryRepository.GetByIdAsync(request.Id);
-
-        var result = mapper.Map<GetCategoryByIdQueryResponse>(category);
+        var result = await context.Categories
+            .Where(c => c.Id == request.Id)
+            .AsNoTracking()
+            .ProjectTo<GetCategoryByIdQueryResponse>(mapper.ConfigurationProvider)
+            .FirstOrDefaultAsync(cancellationToken)
+                ?? throw new EntityNotFoundException();
 
         return result;
     }

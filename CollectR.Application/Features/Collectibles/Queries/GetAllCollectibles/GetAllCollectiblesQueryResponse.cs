@@ -1,6 +1,20 @@
-﻿namespace CollectR.Application.Features.Collectibles.Queries.GetAllCollectibles
-{
-    public class GetAllCollectiblesQueryResponse
-    {
-    }
-}
+﻿using CollectR.Domain.Enums;
+
+namespace CollectR.Application.Features.Collectibles.Queries.GetAllCollectibles;
+
+internal sealed record GetAllCollectiblesQueryResponse(
+    string Title,
+    string? Description,
+    string? Currency,
+    decimal? Value,
+    DateTime? AcquiredDate,
+    bool? IsCollected,
+    int SortIndex,
+    Color? Color,
+    Condition? Condition,
+    string? Metadata,
+    int CategoryId,
+    int CollectionId,
+    IEnumerable<string> ImageUris,
+    IEnumerable<int> TagIds
+);

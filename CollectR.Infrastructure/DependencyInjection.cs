@@ -19,6 +19,8 @@ public static class DependencyInjection
         services.AddScoped<IImageRepository, ImageRepository>();
         services.AddScoped<ITagRepository, TagRepository>();
 
+        services.AddScoped<IApplicationDbContext, ApplicationDbContext>();
+
         services.AddScoped<IFileService, FileService>(provider =>
         {
             var path = webRootPath(provider);

@@ -2,9 +2,4 @@
 
 namespace CollectR.Application.Contracts.Persistence;
 
-public interface IImageRepository
-{
-    Task<IEnumerable<Image>> CreateRangeAsync(IEnumerable<Image> images);
-
-    Task<bool> DeleteAsync(int id);
-}
+public interface IImageRepository : IRepository<Image>;

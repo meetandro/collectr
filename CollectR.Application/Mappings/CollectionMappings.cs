@@ -14,8 +14,8 @@ public class CollectionMappings : Profile
         CreateMap<CreateCollectionCommand, Collection>()
             .ReverseMap();
 
-        CreateMap<GetCollectionByIdQueryResponse, Collection>()
-            .ReverseMap();
+        CreateMap<Collection, GetCollectionByIdQueryResponse>()
+            .ForCtorParam(nameof(GetCollectionByIdQueryResponse.CollectibleIds), opt => opt.MapFrom(src => src.Collectibles.Select(c => c.Id)));
 
         CreateMap<UpdateCollectionCommand, Collection>()
             .ReverseMap();
@@ -23,7 +23,7 @@ public class CollectionMappings : Profile
         CreateMap<UpdateCollectionCommandResponse, Collection>()
             .ReverseMap();
 
-        CreateMap<GetAllCollectionsQueryResponse, Collection>()
-            .ReverseMap();
+        CreateMap<Collection, GetAllCollectionsQueryResponse>()
+            .ForCtorParam(nameof(GetCollectionByIdQueryResponse.CollectibleIds), opt => opt.MapFrom(src => src.Collectibles.Select(c => c.Id)));
     }
 }
