@@ -4,7 +4,4 @@ using CollectR.Domain;
 namespace CollectR.Infrastructure.Persistence.Repositories;
 
 public class CategoryRepository(ApplicationDbContext context)
-    : Repository<Category>(context), ICategoryRepository
-{
-
-}
+    : Repository<Category>(context), ICategoryRepository;

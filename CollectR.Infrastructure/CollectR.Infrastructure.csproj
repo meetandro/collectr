@@ -20,8 +20,4 @@
     <ProjectReference Include="..\CollectR.Domain\CollectR.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Persistence\Services\" />
-  </ItemGroup>
-
 </Project>

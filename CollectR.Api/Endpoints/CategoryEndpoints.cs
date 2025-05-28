@@ -1,4 +1,7 @@
 ﻿using CollectR.Application.Features.Categories.Commands.CreateCategory;
+using CollectR.Application.Features.Categories.Commands.DeleteCategory;
+using CollectR.Application.Features.Categories.Commands.UpdateCategory;
+using CollectR.Application.Features.Categories.Queries.GetAllCategories;
 using CollectR.Application.Features.Categories.Queries.GetCategoryById;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -11,8 +14,27 @@ public static class CategoryEndpoints
     {
         var root = app.MapGroup("/api/categories");
 
+        root.MapGet("", GetAllCategories);
+
+        root.MapGet("/{id}", GetCategoryById);
+
         root.MapPost("", CreateCategory);
-        root.MapGet("id", GetCategoryById);
+
+        root.MapPut("/{id}", UpdateCategory);
+
+        root.MapDelete("/{id}", DeleteCategory);
+    }
+
+    public static async Task<IResult> GetAllCategories(IMediator mediator)
+    {
+        var result = await mediator.Send(new GetAllCategoriesQuery());
+        return Results.Ok(result);
+    }
+
+    public static async Task<IResult> GetCategoryById(int id, IMediator mediator)
+    {
+        var result = await mediator.Send(new GetCategoryByIdQuery(id));
+        return Results.Ok(result);
     }
 
     public static async Task<IResult> CreateCategory(
@@ -24,9 +46,18 @@ public static class CategoryEndpoints
         return Results.Ok(result);
     }
 
-    public static async Task<IResult> GetCategoryById(int id, IMediator mediator)
+    public static async Task<IResult> UpdateCategory(
+        [FromBody] UpdateCategoryCommand command,
+        IMediator mediator
+    )
     {
-        var result = await mediator.Send(new GetCategoryByIdQuery(id));
+        var result = await mediator.Send(command);
+        return Results.Ok(result);
+    }
+
+    public static async Task<IResult> DeleteCategory(int id, IMediator mediator)
+    {
+        var result = await mediator.Send(new DeleteCategoryCommand(id));
         return Results.Ok(result);
     }
 }

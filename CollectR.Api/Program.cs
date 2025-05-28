@@ -12,7 +12,14 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddApplication();
-builder.Services.AddInfrastructure(builder.Configuration);
+builder.Services.AddInfrastructure(
+    builder.Configuration,
+    webRootPath => // pass webhostenv https://github.com/jasontaylordev/NorthwindTraders/blob/master/Src/WebUI/Startup.cs
+    {
+        var env = webRootPath.GetRequiredService<IWebHostEnvironment>();
+        return env.WebRootPath;
+    }
+);
 
 builder.Services.AddHealthChecks();
 
@@ -34,7 +41,10 @@ using (var serviceScope = app.Services.GetService<IServiceScopeFactory>()!.Creat
 app.UseHttpsRedirection();
 
 app.MapCategoryEndpoints();
+app.MapCollectibleEndpoints();
+app.MapCollectionEndpoints();
+app.MapTagEndpoints();
 
-app.MapHealthChecks("api/health");
+app.MapHealthChecks("/health");
 
 app.Run();

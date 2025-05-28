@@ -1,9 +1,10 @@
 ﻿using CollectR.Application.Contracts.Persistence;
+using CollectR.Domain.Common;
 using Microsoft.EntityFrameworkCore;
 
 namespace CollectR.Infrastructure.Persistence.Repositories;
 
-public class Repository<TEntity> : IRepository<TEntity> where TEntity : class
+public class Repository<TEntity> : IRepository<TEntity> where TEntity : Entity
 {
     private readonly ApplicationDbContext _context;
     private readonly DbSet<TEntity> _dbSet;
@@ -16,37 +17,43 @@ public class Repository<TEntity> : IRepository<TEntity> where TEntity : class
 
     public async Task<IEnumerable<TEntity>> GetAllAsync()
     {
-        return await _dbSet.ToListAsync();
+        return await _dbSet
+            .Where(x => !x.IsDeleted)
+            .ToListAsync();
     }
 
-    public async Task<TEntity> GetByIdAsync(int id)
+    public async Task<TEntity?> GetByIdAsync(int id)
     {
-        TEntity entity = await _dbSet.FindAsync(id);
+        TEntity? entity = await _dbSet.FindAsync(id);
+        if (entity is not null)
+        {
+            return entity;
+        }
+        return null;
+    }
+
+    public async Task<TEntity> CreateAsync(TEntity entity)
+    {
+        entity.CreatedAt = DateTime.UtcNow; // handle accordingly
+        await _dbSet.AddAsync(entity);
         return entity;
     }
 
-    public async Task<int> CreateAsync(TEntity entity)
+    public TEntity Update(TEntity entity)
     {
-        await _dbSet.AddAsync(entity);
-        return 0;
-    }
-
-    public Task<TEntity> UpdateAsync(TEntity entity)
-    {
-        throw new NotImplementedException();
+        entity.UpdatedAt = DateTime.UtcNow;
+        _dbSet.Update(entity);
+        return entity;
     }
 
     public async Task<bool> DeleteAsync(int id)
     {
-        TEntity entity = await _dbSet.FindAsync(id);
-        if (entity != null)
-            _dbSet.Remove(entity);
-        await SaveChangesAsync();
-        return true;
-    }
-
-    public Task SaveChangesAsync()
-    {
-        throw new NotImplementedException();
+        TEntity? entity = await _dbSet.FindAsync(id);
+        if (entity is not null)
+        {
+            entity.IsDeleted = true;
+            return true;
+        }
+        return false;
     }
 }

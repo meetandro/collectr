@@ -3,13 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34728.123
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CollectR.Api", "CollectR.Api\CollectR.Api.csproj", "{AB3EE10A-5327-4F2C-8436-C3A8C3402B0A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CollectR.Api", "CollectR.Api\CollectR.Api.csproj", "{AB3EE10A-5327-4F2C-8436-C3A8C3402B0A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CollectR.Domain", "CollectR.Domain\CollectR.Domain.csproj", "{80309F59-A9A8-46C4-B77F-A45716B77DF0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CollectR.Domain", "CollectR.Domain\CollectR.Domain.csproj", "{80309F59-A9A8-46C4-B77F-A45716B77DF0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CollectR.Infrastructure", "CollectR.Infrastructure\CollectR.Infrastructure.csproj", "{AB74389F-505F-4AF0-AF6A-6F1830CFAF5A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CollectR.Infrastructure", "CollectR.Infrastructure\CollectR.Infrastructure.csproj", "{AB74389F-505F-4AF0-AF6A-6F1830CFAF5A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CollectR.Application", "CollectR.Application\CollectR.Application.csproj", "{D2A5C6F2-B8DE-45CA-A292-550FF966BEFA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CollectR.Application", "CollectR.Application\CollectR.Application.csproj", "{D2A5C6F2-B8DE-45CA-A292-550FF966BEFA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

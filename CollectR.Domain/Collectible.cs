@@ -1,8 +1,9 @@
 ﻿using CollectR.Domain.Common;
+using CollectR.Domain.Enums;
 
 namespace CollectR.Domain;
 
-public abstract class Collectible : BaseEntity
+public class Collectible : Entity
 {
     public string Title { get; set; } = string.Empty;
 
@@ -17,6 +18,12 @@ public abstract class Collectible : BaseEntity
     public bool? IsCollected { get; set; }
 
     public int SortIndex { get; set; }
+
+    public Color? Color { get; set; }
+
+    public Condition? Condition { get; set; }
+
+    public string? Metadata { get; set; }
 
     public int CategoryId { get; set; }
 

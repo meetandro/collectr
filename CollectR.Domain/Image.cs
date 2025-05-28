@@ -2,7 +2,7 @@
 
 namespace CollectR.Domain;
 
-public class Image : BaseEntity
+public class Image : Entity
 {
     public string Uri { get; set; } = string.Empty;
 

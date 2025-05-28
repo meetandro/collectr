@@ -9,16 +9,16 @@ internal class CreateCategoryCommandHandler(
     ICategoryRepository categoryRepository,
     IMapper mapper,
     IUnitOfWork unitOfWork)
-    : IRequestHandler<CreateCategoryCommand, int>
+    : IRequestHandler<CreateCategoryCommand, int> // fix order, unit of work second
 {
-    public async Task<int> Handle(CreateCategoryCommand request, CancellationToken ct)
+    public async Task<int> Handle(CreateCategoryCommand request, CancellationToken cancellationToken)
     {
         var category = mapper.Map<Category>(request);
 
         var result = await categoryRepository.CreateAsync(category);
 
-        await unitOfWork.SaveChangesAsync(ct);
+        await unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return result;
+        return result.Id;
     }
 }

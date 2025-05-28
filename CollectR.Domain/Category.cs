@@ -2,7 +2,7 @@
 
 namespace CollectR.Domain;
 
-public class Category : BaseEntity
+public class Category : Entity
 {
     public string Name { get; set; } = string.Empty;
 
