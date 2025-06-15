@@ -1,19 +1,24 @@
 ﻿using AutoMapper;
+using CollectR.Application.Abstractions;
+using CollectR.Application.Abstractions.Messaging;
 using CollectR.Application.Contracts.Persistence;
 using CollectR.Domain;
-using MediatR;
 
 namespace CollectR.Application.Features.Collections.Commands.CreateCollection;
 
-internal class CreateCollectionCommandHandler(ICollectionRepository collectionRepository, IUnitOfWork unitOfWork, IMapper mapper) : IRequestHandler<CreateCollectionCommand, int>
+internal sealed class CreateCollectionCommandHandler(
+    ICollectionRepository collectionRepository,
+    IMapper mapper
+) : ICommandHandler<CreateCollectionCommand, Result<Guid>>
 {
-    public async Task<int> Handle(CreateCollectionCommand request, CancellationToken cancellationToken)
+    public async Task<Result<Guid>> Handle(
+        CreateCollectionCommand request,
+        CancellationToken cancellationToken
+    )
     {
         var collection = mapper.Map<Collection>(request);
 
         var result = await collectionRepository.CreateAsync(collection);
-
-        await unitOfWork.SaveChangesAsync(cancellationToken);
 
         return result.Id;
     }

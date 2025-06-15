@@ -6,7 +6,6 @@ public sealed class CreateCategoryCommandValidator : AbstractValidator<CreateCat
 {
     public CreateCategoryCommandValidator()
     {
-        RuleFor(command => command.Name)
-            .NotEmpty().WithMessage("Category name can't be empty.");
+        RuleFor(command => command.Name).NotEmpty().WithMessage("Category name can't be empty.");
     }
 }

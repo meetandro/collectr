@@ -1,18 +1,19 @@
-﻿using FluentValidation.Results;
-using FluentValidation;
+﻿using FluentValidation;
+using FluentValidation.Results;
 using MediatR;
 
 namespace CollectR.Application.Behaviors;
 
 internal sealed class ValidationPipelineBehavior<TRequest, TResponse>(
-    IEnumerable<IValidator<TRequest>> validators)
-    : IPipelineBehavior<TRequest, TResponse>
+    IEnumerable<IValidator<TRequest>> validators
+) : IPipelineBehavior<TRequest, TResponse>
     where TRequest : class
 {
     public async Task<TResponse> Handle(
         TRequest request,
         RequestHandlerDelegate<TResponse> next,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken
+    )
     {
         var validationFailures = await ValidateAsync(request);
 
@@ -34,7 +35,8 @@ internal sealed class ValidationPipelineBehavior<TRequest, TResponse>(
         var context = new ValidationContext<TRequest>(request);
 
         var validationResults = await Task.WhenAll(
-            validators.Select(validator => validator.ValidateAsync(context)));
+            validators.Select(validator => validator.ValidateAsync(context))
+        );
 
         var validationFailures = validationResults
             .Where(validationResult => !validationResult.IsValid)

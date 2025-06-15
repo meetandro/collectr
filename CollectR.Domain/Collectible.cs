@@ -17,19 +17,21 @@ public class Collectible : Entity
 
     public bool? IsCollected { get; set; }
 
-    public int SortIndex { get; set; }
+    public int? SortIndex { get; set; }
 
     public Color? Color { get; set; }
 
     public Condition? Condition { get; set; }
 
-    public string? Metadata { get; set; }
+    public Guid AttributesId { get; set; }
 
-    public int CategoryId { get; set; }
+    public Attributes? Attributes { get; set; }
+
+    public Guid CategoryId { get; set; }
 
     public Category? Category { get; set; }
 
-    public int CollectionId { get; set; }
+    public Guid CollectionId { get; set; }
 
     public Collection? Collection { get; set; }
 

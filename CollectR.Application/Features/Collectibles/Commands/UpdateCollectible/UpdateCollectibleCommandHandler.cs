@@ -1,62 +1,56 @@
 ﻿using AutoMapper;
+using CollectR.Application.Abstractions;
+using CollectR.Application.Abstractions.Messaging;
 using CollectR.Application.Contracts.Persistence;
-using CollectR.Application.Contracts.Services;
 using CollectR.Domain;
-using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace CollectR.Application.Features.Collectibles.Commands.UpdateCollectible;
 
-internal class UpdateCollectibleCommandHandler(ICollectibleRepository collectibleRepository, IImageRepository imageRepository, IUnitOfWork unitOfWork, IFileService fileService, IMapper mapper) : IRequestHandler<UpdateCollectibleCommand, UpdateCollectibleCommandResponse>
+internal sealed class UpdateCollectibleCommandHandler(
+    ICollectibleRepository collectibleRepository,
+    IApplicationDbContext context,
+    IMapper mapper
+) : ICommandHandler<UpdateCollectibleCommand, Result<UpdateCollectibleCommandResponse>>
 {
-    public async Task<UpdateCollectibleCommandResponse> Handle(UpdateCollectibleCommand request, CancellationToken cancellationToken)
+    public async Task<Result<UpdateCollectibleCommandResponse>> Handle(
+        UpdateCollectibleCommand request,
+        CancellationToken cancellationToken
+    )
     {
-        var collectible = await collectibleRepository.GetByIdAsync(request.Id)
-            ?? throw new NotImplementedException();
+        var collectible = await context
+            .Collectibles.Include(c => c.CollectibleTags)
+            .Include(c => c.Images)
+            .FirstOrDefaultAsync(c => c.Id == request.Id, cancellationToken);
+
+        if (collectible is null)
+        {
+            return EntityErrors.NotFound(request.Id);
+        }
 
         mapper.Map(request, collectible);
 
-        if (collectible.Images is not null && collectible.Images.Count > 0)
-        {
-            foreach (var file in collectible.Images)
-            {
-                if (request.ExistingImages is not null && !request.ExistingImages.Contains(file.Uri))
-                {
-                    fileService.DeleteFileInFolder(file.Uri, "images");
-                    await imageRepository.DeleteAsync(file.Id);
-                }
-            }
-        }
-
-        var imageUris = new List<Image>();
-
-        if (request.NewImages is not null && request.NewImages.Any())
-        {
-            foreach (var file in request.NewImages)
-            {
-                var savedFileName = await fileService.SaveFileInFolderAsync(file, "images");
-                var imageUrl = $"/images/{savedFileName}";
-
-                imageUris.Add(
-                    new Image
-                    {
-                        Uri = imageUrl,
-                        CollectibleId = collectible.Id,
-                    }
-                );
-            }
-
-            await imageRepository.CreateRangeAsync(imageUris);
-        }
-
-        foreach (var imageUrl in imageUris)
-        {
-            collectible.Images.Add(imageUrl);
-        }
+        HandleTags(request, collectible);
+        await HandleImagesAsync(request, collectible, cancellationToken);
 
         var result = collectibleRepository.Update(collectible);
 
-        await unitOfWork.SaveChangesAsync(cancellationToken);
-
         return mapper.Map<UpdateCollectibleCommandResponse>(result);
+    }
+
+    private void HandleTags(UpdateCollectibleCommand request, Collectible collectible)
+    {
+        // Your custom tag logic goes here.
+        // Example: collectible.CollectibleTags = await _yourTagService.UpdateTagsAsync(...);
+    }
+
+    private async Task HandleImagesAsync(
+        UpdateCollectibleCommand request,
+        Collectible collectible,
+        CancellationToken cancellationToken
+    )
+    {
+        // Your custom image handling logic goes here.
+        // Example: collectible.Images = await _yourImageService.ProcessImagesAsync(...);
     }
 }

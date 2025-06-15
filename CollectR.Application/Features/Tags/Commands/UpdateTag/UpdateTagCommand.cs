@@ -1,5 +1,7 @@
-﻿using MediatR;
+﻿using CollectR.Application.Abstractions;
+using CollectR.Application.Abstractions.Messaging;
 
 namespace CollectR.Application.Features.Tags.Commands.UpdateTag;
 
-public sealed record UpdateTagCommand(int Id, string Name, string Hex, int CollectionId) : IRequest<UpdateTagCommandResponse>;
+public sealed record UpdateTagCommand(Guid Id, string Name, string Hex, Guid CollectionId)
+    : ICommand<Result<UpdateTagCommandResponse>>;

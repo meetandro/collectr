@@ -1,5 +1,7 @@
-﻿using MediatR;
+﻿using CollectR.Application.Abstractions;
+using CollectR.Application.Abstractions.Messaging;
 
 namespace CollectR.Application.Features.Collections.Commands.CreateCollection;
 
-public sealed record CreateCollectionCommand(string Name, string? Description) : IRequest<int>;
+public sealed record CreateCollectionCommand(string Name, string? Description)
+    : ICommand<Result<Guid>>;

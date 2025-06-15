@@ -1,22 +1,29 @@
 ﻿using AutoMapper;
+using CollectR.Application.Abstractions;
+using CollectR.Application.Abstractions.Messaging;
 using CollectR.Application.Contracts.Persistence;
-using MediatR;
 
 namespace CollectR.Application.Features.Tags.Commands.UpdateTag;
 
-internal class UpdateTagCommandHandler(ITagRepository tagRepository, IUnitOfWork unitOfWork, IMapper mapper) : IRequestHandler<UpdateTagCommand, UpdateTagCommandResponse>
+internal sealed class UpdateTagCommandHandler(ITagRepository tagRepository, IMapper mapper)
+    : ICommandHandler<UpdateTagCommand, Result<UpdateTagCommandResponse>>
 {
-    public async Task<UpdateTagCommandResponse> Handle(UpdateTagCommand request, CancellationToken cancellationToken)
+    public async Task<Result<UpdateTagCommandResponse>> Handle(
+        UpdateTagCommand request,
+        CancellationToken cancellationToken
+    )
     {
-        var tag = await tagRepository.GetByIdAsync(request.Id)
-            ?? throw new NotImplementedException();
+        var tag = await tagRepository.GetByIdAsync(request.Id);
+
+        if (tag is null)
+        {
+            return EntityErrors.NotFound(request.Id);
+        }
 
         mapper.Map(request, tag);
 
-        var result = tagRepository.Update(tag);
+        var result = mapper.Map<UpdateTagCommandResponse>(tagRepository.Update(tag));
 
-        await unitOfWork.SaveChangesAsync(cancellationToken);
-
-        return mapper.Map<UpdateTagCommandResponse>(result);
+        return result;
     }
 }

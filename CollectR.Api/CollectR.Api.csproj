@@ -18,10 +18,7 @@
   <ItemGroup>
     <ProjectReference Include="..\CollectR.Application\CollectR.Application.csproj" />
     <ProjectReference Include="..\CollectR.Infrastructure\CollectR.Infrastructure.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Middleware\" />
+    <ProjectReference Include="..\CollectR.Persistence\CollectR.Persistence.csproj" />
   </ItemGroup>
 
 </Project>

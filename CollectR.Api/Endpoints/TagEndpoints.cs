@@ -1,8 +1,8 @@
 ﻿using CollectR.Application.Features.Tags.Commands.CreateTag;
 using CollectR.Application.Features.Tags.Commands.DeleteTag;
 using CollectR.Application.Features.Tags.Commands.UpdateTag;
-using CollectR.Application.Features.Tags.Queries.GetAllTags;
 using CollectR.Application.Features.Tags.Queries.GetTagById;
+using CollectR.Application.Features.Tags.Queries.GetTags;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -27,29 +27,35 @@ public static class TagEndpoints
 
     public static async Task<IResult> GetAllTags(IMediator mediator)
     {
-        var result = await mediator.Send(new GetAllTagsQuery());
+        var result = await mediator.Send(new GetTagsQuery());
         return Results.Ok(result);
     }
 
-    public static async Task<IResult> GetTagById(int id, IMediator mediator)
+    public static async Task<IResult> GetTagById(Guid id, IMediator mediator)
     {
         var result = await mediator.Send(new GetTagByIdQuery(id));
         return Results.Ok(result);
     }
 
-    public static async Task<IResult> CreateTag([FromBody] CreateTagCommand command, IMediator mediator)
+    public static async Task<IResult> CreateTag(
+        [FromBody] CreateTagCommand command,
+        IMediator mediator
+    )
     {
         var result = await mediator.Send(command);
         return Results.Ok(result);
     }
 
-    public static async Task<IResult> UpdateTag([FromBody] UpdateTagCommand command, IMediator mediator)
+    public static async Task<IResult> UpdateTag(
+        [FromBody] UpdateTagCommand command,
+        IMediator mediator
+    )
     {
         var result = await mediator.Send(command);
         return Results.Ok(result);
     }
 
-    public static async Task<IResult> DeleteTag(int id, IMediator mediator)
+    public static async Task<IResult> DeleteTag(Guid id, IMediator mediator)
     {
         var result = await mediator.Send(new DeleteTagCommand(id));
         return Results.Ok(result);

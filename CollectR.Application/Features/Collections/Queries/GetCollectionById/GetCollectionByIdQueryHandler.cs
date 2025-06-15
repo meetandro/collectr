@@ -1,21 +1,30 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using CollectR.Application.Abstractions;
+using CollectR.Application.Abstractions.Messaging;
 using CollectR.Application.Contracts.Persistence;
-using CollectR.Application.Exceptions;
-using MediatR;
 using Microsoft.EntityFrameworkCore;
 
 namespace CollectR.Application.Features.Collections.Queries.GetCollectionById;
 
-internal class GetCollectionByIdQueryHandler(IApplicationDbContext context, IMapper mapper) : IRequestHandler<GetCollectionByIdQuery, GetCollectionByIdQueryResponse>
+internal sealed class GetCollectionByIdQueryHandler(IApplicationDbContext context, IMapper mapper)
+    : IQueryHandler<GetCollectionByIdQuery, Result<GetCollectionByIdQueryResponse>>
 {
-    public async Task<GetCollectionByIdQueryResponse> Handle(GetCollectionByIdQuery request, CancellationToken cancellationToken)
+    public async Task<Result<GetCollectionByIdQueryResponse>> Handle(
+        GetCollectionByIdQuery request,
+        CancellationToken cancellationToken
+    )
     {
-        var result = await context.Collections
-            .Where(c => c.Id == request.Id)
+        var result = await context
+            .Collections.Where(c => c.Id == request.Id)
             .AsNoTracking()
             .ProjectTo<GetCollectionByIdQueryResponse>(mapper.ConfigurationProvider)
-            .FirstOrDefaultAsync(cancellationToken) ?? throw new EntityNotFoundException();
+            .FirstOrDefaultAsync(cancellationToken);
+
+        if (result is null)
+        {
+            return EntityErrors.NotFound(request.Id);
+        }
 
         return result;
     }

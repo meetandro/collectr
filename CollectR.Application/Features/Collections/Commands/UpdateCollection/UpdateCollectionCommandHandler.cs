@@ -1,23 +1,33 @@
 ﻿using AutoMapper;
+using CollectR.Application.Abstractions;
+using CollectR.Application.Abstractions.Messaging;
 using CollectR.Application.Contracts.Persistence;
-using CollectR.Domain;
-using MediatR;
 
 namespace CollectR.Application.Features.Collections.Commands.UpdateCollection;
 
-internal class UpdateCollectionCommandHandler(ICollectionRepository collectionRepository, IUnitOfWork unitOfWork, IMapper mapper) : IRequestHandler<UpdateCollectionCommand, UpdateCollectionCommandResponse>
+internal sealed class UpdateCollectionCommandHandler(
+    ICollectionRepository collectionRepository,
+    IMapper mapper
+) : ICommandHandler<UpdateCollectionCommand, Result<UpdateCollectionCommandResponse>>
 {
-    public async Task<UpdateCollectionCommandResponse> Handle(UpdateCollectionCommand request, CancellationToken cancellationToken)
+    public async Task<Result<UpdateCollectionCommandResponse>> Handle(
+        UpdateCollectionCommand request,
+        CancellationToken cancellationToken
+    )
     {
-        var collection = await collectionRepository.GetByIdAsync(request.Id)
-            ?? throw new NotImplementedException();
+        var collection = await collectionRepository.GetByIdAsync(request.Id);
+
+        if (collection is null)
+        {
+            return EntityErrors.NotFound(request.Id);
+        }
 
         mapper.Map(request, collection);
 
-        var result = collectionRepository.Update(collection);
+        var result = mapper.Map<UpdateCollectionCommandResponse>(
+            collectionRepository.Update(collection)
+        );
 
-        await unitOfWork.SaveChangesAsync(cancellationToken);
-
-        return mapper.Map<UpdateCollectionCommandResponse>(result);
+        return result;
     }
 }

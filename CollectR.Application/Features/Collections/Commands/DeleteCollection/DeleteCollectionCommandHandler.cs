@@ -1,16 +1,26 @@
-﻿using CollectR.Application.Contracts.Persistence;
-using MediatR;
+﻿using CollectR.Application.Abstractions;
+using CollectR.Application.Abstractions.Messaging;
+using CollectR.Application.Contracts.Persistence;
 
 namespace CollectR.Application.Features.Collections.Commands.DeleteCollection;
 
-internal class DeleteCollectionCommandHandler(ICollectionRepository collectionRepository, IUnitOfWork unitOfWork) : IRequestHandler<DeleteCollectionCommand, bool>
+internal sealed class DeleteCollectionCommandHandler(ICollectionRepository collectionRepository)
+    : ICommandHandler<DeleteCollectionCommand, Result>
 {
-    public async Task<bool> Handle(DeleteCollectionCommand request, CancellationToken cancellationToken)
+    public async Task<Result> Handle(
+        DeleteCollectionCommand request,
+        CancellationToken cancellationToken
+    )
     {
-        var result = await collectionRepository.DeleteAsync(request.Id);
+        var collection = await collectionRepository.GetByIdAsync(request.Id);
 
-        await unitOfWork.SaveChangesAsync(cancellationToken);
+        if (collection is null)
+        {
+            return EntityErrors.NotFound(request.Id);
+        }
 
-        return result;
+        await collectionRepository.DeleteAsync(request.Id);
+
+        return Result.Success();
     }
 }

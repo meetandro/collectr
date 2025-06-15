@@ -1,29 +1,31 @@
 ﻿using AutoMapper;
+using CollectR.Application.Abstractions;
+using CollectR.Application.Abstractions.Messaging;
 using CollectR.Application.Contracts.Persistence;
-using MediatR;
 
 namespace CollectR.Application.Features.Categories.Commands.UpdateCategory;
 
-internal class UpdateCategoryCommandHandler(
+internal sealed class UpdateCategoryCommandHandler(
     ICategoryRepository categoryRepository,
-    IMapper mapper,
-    IUnitOfWork unitOfWork
-) : IRequestHandler<UpdateCategoryCommand, UpdateCategoryCommandResponse>
+    IMapper mapper
+) : ICommandHandler<UpdateCategoryCommand, Result<UpdateCategoryCommandResponse>>
 {
-    public async Task<UpdateCategoryCommandResponse> Handle(
+    public async Task<Result<UpdateCategoryCommandResponse>> Handle(
         UpdateCategoryCommand request,
         CancellationToken cancellationToken
     )
     {
-        var category = await categoryRepository.GetByIdAsync(request.Id)
-            ?? throw new ArgumentNullException(nameof(request));
+        var category = await categoryRepository.GetByIdAsync(request.Id);
+
+        if (category is null)
+        {
+            return EntityErrors.NotFound(request.Id);
+        }
 
         mapper.Map(request, category);
 
-        var result = categoryRepository.Update(category);
+        var result = mapper.Map<UpdateCategoryCommandResponse>(categoryRepository.Update(category));
 
-        await unitOfWork.SaveChangesAsync(cancellationToken);
-
-        return mapper.Map<UpdateCategoryCommandResponse>(result);
+        return result;
     }
 }

@@ -1,3 +1,9 @@
 ﻿namespace CollectR.Application.Features.Tags.Queries.GetTagById;
 
-internal sealed record GetTagByIdQueryResponse(int Id, string Name, string Hex, int CollectionId, IEnumerable<int> CollectibleTagIds);
+internal sealed record GetTagByIdQueryResponse(
+    Guid Id,
+    string Name,
+    string Hex,
+    Guid CollectionId,
+    IEnumerable<Guid> CollectibleIds
+);

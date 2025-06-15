@@ -1,11 +1,9 @@
 ﻿using CollectR.Application.Features.Collectibles.Commands.CreateCollectible;
 using CollectR.Application.Features.Collectibles.Commands.DeleteCollectible;
 using CollectR.Application.Features.Collectibles.Commands.UpdateCollectible;
-using CollectR.Application.Features.Collectibles.Queries.GetAllCollectibles;
 using CollectR.Application.Features.Collectibles.Queries.GetCollectibleById;
-using CollectR.Domain.Enums;
+using CollectR.Application.Features.Collectibles.Queries.GetCollectibles;
 using MediatR;
-using Microsoft.AspNetCore.Mvc;
 
 namespace CollectR.Api.Endpoints;
 
@@ -24,56 +22,55 @@ public static class CollectibleEndpoints
         root.MapPut("/{id}", UpdateCollectible).DisableAntiforgery();
 
         root.MapDelete("/{id}", DeleteCollectible);
+
+        root.MapPut("/{id}/tags", UpdateCollectibleTags);
+
+        root.MapPost("/{id}/images", UpdateCollectibleImages);
     }
 
     public static async Task<IResult> GetAllCollectibles(IMediator mediator)
     {
-        var result = await mediator.Send(new GetAllCollectiblesQuery());
+        var result = await mediator.Send(new GetCollectiblesQuery());
         return Results.Ok(result);
     }
 
-    public static async Task<IResult> GetCollectibleById(int id, IMediator mediator)
+    public static async Task<IResult> GetCollectibleById(Guid id, IMediator mediator)
     {
         var result = await mediator.Send(new GetCollectibleByIdQuery(id));
         return Results.Ok(result);
     }
 
-    /*    public static async Task<IResult> CreateCollectible([FromBody] CreateCollectibleCommand command, IMediator mediator)
-        {
-            var result = await mediator.Send(command);
-            return Results.Ok(result);
-        }*/
-
     public static async Task<IResult> CreateCollectible(
-        string Title,
-        string? Description,
-        string? Currency,
-        decimal? Value,
-        DateTime? AcquiredDate,
-        bool? IsCollected,
-        int SortIndex,
-        Color? Color,
-        Condition? Condition,
-        string? Metadata,
-        int CategoryId,
-        int CollectionId,
-        IFormFileCollection Images,
+        [AsParameters] CreateCollectibleCommand command,
         IMediator mediator
     )
-    {
-        var result = await mediator.Send(new CreateCollectibleCommand(Title, Description, Currency, Value, AcquiredDate, IsCollected, SortIndex, Color, Condition, Metadata, CategoryId, CollectionId, Images));
-        return Results.Ok(result);
-    }
-
-    public static async Task<IResult> UpdateCollectible([FromBody] UpdateCollectibleCommand command, IMediator mediator)
     {
         var result = await mediator.Send(command);
         return Results.Ok(result);
     }
 
-    public static async Task<IResult> DeleteCollectible(int id, IMediator mediator)
+    public static async Task<IResult> UpdateCollectible(
+        [AsParameters] UpdateCollectibleCommand command,
+        IMediator mediator
+    )
+    {
+        var result = await mediator.Send(command);
+        return Results.Ok(result);
+    }
+
+    public static async Task<IResult> DeleteCollectible(Guid id, IMediator mediator)
     {
         var result = await mediator.Send(new DeleteCollectibleCommand(id));
         return Results.Ok(result);
+    }
+
+    public static Task<IResult> UpdateCollectibleTags()
+    {
+        throw new NotImplementedException();
+    }
+
+    public static Task<IResult> UpdateCollectibleImages()
+    {
+        throw new NotImplementedException();
     }
 }

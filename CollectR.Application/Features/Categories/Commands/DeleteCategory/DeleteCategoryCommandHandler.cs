@@ -1,17 +1,26 @@
-﻿using CollectR.Application.Contracts.Persistence;
-using MediatR;
+﻿using CollectR.Application.Abstractions;
+using CollectR.Application.Abstractions.Messaging;
+using CollectR.Application.Contracts.Persistence;
 
 namespace CollectR.Application.Features.Categories.Commands.DeleteCategory;
 
-internal class DeleteCategoryCommandHandler(ICategoryRepository categoryRepository, IUnitOfWork unitOfWork) 
-    : IRequestHandler<DeleteCategoryCommand, bool>
+internal sealed class DeleteCategoryCommandHandler(ICategoryRepository categoryRepository)
+    : ICommandHandler<DeleteCategoryCommand, Result>
 {
-    public async Task<bool> Handle(DeleteCategoryCommand request, CancellationToken cancellationToken)
+    public async Task<Result> Handle(
+        DeleteCategoryCommand request,
+        CancellationToken cancellationToken
+    )
     {
-        var result = await categoryRepository.DeleteAsync(request.Id);
+        var category = await categoryRepository.GetByIdAsync(request.Id);
 
-        await unitOfWork.SaveChangesAsync(cancellationToken);
+        if (category is null)
+        {
+            return EntityErrors.NotFound(request.Id);
+        }
 
-        return result;
+        await categoryRepository.DeleteAsync(request.Id);
+
+        return Result.Success();
     }
 }

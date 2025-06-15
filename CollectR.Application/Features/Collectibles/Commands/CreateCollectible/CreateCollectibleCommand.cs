@@ -1,5 +1,6 @@
-﻿using CollectR.Domain.Enums;
-using MediatR;
+﻿using CollectR.Application.Abstractions;
+using CollectR.Application.Abstractions.Messaging;
+using CollectR.Domain.Enums;
 using Microsoft.AspNetCore.Http;
 
 namespace CollectR.Application.Features.Collectibles.Commands.CreateCollectible;
@@ -11,11 +12,11 @@ public sealed record CreateCollectibleCommand(
     decimal? Value,
     DateTime? AcquiredDate,
     bool? IsCollected,
-    int SortIndex,
+    int? SortIndex,
     Color? Color,
     Condition? Condition,
-    string? Metadata,
-    int CategoryId,
-    int CollectionId,
+    Guid AttributesId,
+    Guid CategoryId,
+    Guid CollectionId,
     IFormFileCollection Images
-) : IRequest<int>;
+) : ICommand<Result<Guid>>;

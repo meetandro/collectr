@@ -1,20 +1,20 @@
 ﻿using AutoMapper;
+using CollectR.Application.Abstractions;
+using CollectR.Application.Abstractions.Messaging;
 using CollectR.Application.Contracts.Persistence;
 using CollectR.Application.Contracts.Services;
 using CollectR.Domain;
-using MediatR;
 
 namespace CollectR.Application.Features.Collectibles.Commands.CreateCollectible;
 
-internal class CreateCollectibleCommandHandler(
+internal sealed class CreateCollectibleCommandHandler(
     ICollectibleRepository collectibleRepository,
     IImageRepository imageRepository,
-    IUnitOfWork unitOfWork,
     IFileService fileService,
     IMapper mapper
-) : IRequestHandler<CreateCollectibleCommand, int>
+) : ICommandHandler<CreateCollectibleCommand, Result<Guid>>
 {
-    public async Task<int> Handle(
+    public async Task<Result<Guid>> Handle(
         CreateCollectibleCommand request,
         CancellationToken cancellationToken
     )
@@ -32,19 +32,11 @@ internal class CreateCollectibleCommandHandler(
                 var savedFileName = await fileService.SaveFileInFolderAsync(image, "images");
                 var imageUri = $"/images/{savedFileName}";
 
-                images.Add(
-                    new Image
-                    {
-                        Uri = imageUri,
-                        Collectible = collectible
-                    }
-                );
+                images.Add(new Image { Uri = imageUri, Collectible = collectible });
             }
 
             await imageRepository.CreateRangeAsync(images);
         }
-
-        await unitOfWork.SaveChangesAsync(cancellationToken);
 
         return result.Id;
     }

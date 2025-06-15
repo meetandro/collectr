@@ -1,15 +1,26 @@
-﻿using CollectR.Application.Contracts.Persistence;
+﻿using CollectR.Application.Abstractions;
+using CollectR.Application.Abstractions.Messaging;
+using CollectR.Application.Contracts.Persistence;
 using CollectR.Application.Contracts.Services;
-using MediatR;
 
 namespace CollectR.Application.Features.Collectibles.Commands.DeleteCollectible;
 
-internal class DeleteCollectibleCommandHandler(ICollectibleRepository collectibleRepository, IUnitOfWork unitOfWork, IFileService fileService) : IRequestHandler<DeleteCollectibleCommand, bool>
+internal sealed class DeleteCollectibleCommandHandler(
+    ICollectibleRepository collectibleRepository,
+    IFileService fileService
+) : ICommandHandler<DeleteCollectibleCommand, Result>
 {
-    public async Task<bool> Handle(DeleteCollectibleCommand request, CancellationToken cancellationToken)
+    public async Task<Result> Handle(
+        DeleteCollectibleCommand request,
+        CancellationToken cancellationToken
+    )
     {
-        var collectible = await collectibleRepository.GetByIdAsync(request.Id)
-            ?? throw new NotImplementedException();
+        var collectible = await collectibleRepository.GetByIdAsync(request.Id);
+
+        if (collectible is null)
+        {
+            return EntityErrors.NotFound(request.Id);
+        }
 
         var imageUris = collectible.Images.Select(i => i.Uri);
 
@@ -18,10 +29,8 @@ internal class DeleteCollectibleCommandHandler(ICollectibleRepository collectibl
             fileService.DeleteFileInFolder(imageUri, "images");
         }
 
-        var result = await collectibleRepository.DeleteAsync(request.Id);
+        await collectibleRepository.DeleteAsync(request.Id);
 
-        await unitOfWork.SaveChangesAsync(cancellationToken);
-
-        return result;
+        return Result.Success();
     }
 }

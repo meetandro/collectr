@@ -1,3 +1,8 @@
 ﻿namespace CollectR.Application.Features.Collections.Queries.GetCollectionById;
 
-internal sealed record GetCollectionByIdQueryResponse(int Id, string Name, string? Description, IEnumerable<int> CollectibleIds);
+internal sealed record GetCollectionByIdQueryResponse(
+    Guid Id,
+    string Name,
+    string? Description,
+    IEnumerable<Guid> CollectibleIds
+);

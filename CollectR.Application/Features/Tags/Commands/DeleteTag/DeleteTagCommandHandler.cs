@@ -1,16 +1,23 @@
-﻿using CollectR.Application.Contracts.Persistence;
-using MediatR;
+﻿using CollectR.Application.Abstractions;
+using CollectR.Application.Abstractions.Messaging;
+using CollectR.Application.Contracts.Persistence;
 
 namespace CollectR.Application.Features.Tags.Commands.DeleteTag;
 
-internal class DeleteTagCommandHandler(ITagRepository tagRepository, IUnitOfWork unitOfWork) : IRequestHandler<DeleteTagCommand, bool>
+internal sealed class DeleteTagCommandHandler(ITagRepository tagRepository)
+    : ICommandHandler<DeleteTagCommand, Result>
 {
-    public async Task<bool> Handle(DeleteTagCommand request, CancellationToken cancellationToken)
+    public async Task<Result> Handle(DeleteTagCommand request, CancellationToken cancellationToken)
     {
-        var result = await tagRepository.DeleteAsync(request.Id);
+        var tag = await tagRepository.GetByIdAsync(request.Id);
 
-        await unitOfWork.SaveChangesAsync(cancellationToken);
+        if (tag is null)
+        {
+            return EntityErrors.NotFound(request.Id);
+        }
 
-        return result;
+        await tagRepository.DeleteAsync(request.Id);
+
+        return Result.Success();
     }
 }

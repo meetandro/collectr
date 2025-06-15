@@ -8,7 +8,7 @@ public class Tag : Entity
 
     public string Hex { get; set; } = "#FFFFFF";
 
-    public int CollectionId { get; set; }
+    public Guid CollectionId { get; set; }
 
     public Collection? Collection { get; set; }
 

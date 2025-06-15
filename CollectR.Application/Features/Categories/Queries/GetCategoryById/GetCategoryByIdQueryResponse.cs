@@ -1,3 +1,7 @@
 ﻿namespace CollectR.Application.Features.Categories.Queries.GetCategoryById;
 
-internal sealed record GetCategoryByIdQueryResponse(int Id, string Name, IEnumerable<int> CollectibleIds);
+internal sealed record GetCategoryByIdQueryResponse(
+    Guid Id,
+    string Name,
+    IEnumerable<Guid> CollectibleIds
+);

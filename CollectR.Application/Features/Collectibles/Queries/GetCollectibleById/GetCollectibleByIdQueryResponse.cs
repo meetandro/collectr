@@ -12,9 +12,9 @@ internal sealed record GetCollectibleByIdQueryResponse(
     int SortIndex,
     Color? Color,
     Condition? Condition,
-    string? Metadata,
-    int CategoryId,
-    int CollectionId,
+    Guid AttributesId,
+    Guid CategoryId,
+    Guid CollectionId,
     IEnumerable<string> ImageUris,
-    IEnumerable<int> TagIds
+    IEnumerable<Guid> TagIds
 );
