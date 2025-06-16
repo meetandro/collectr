@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using CollectR.Application.Abstractions;
-using CollectR.Application.Abstractions.Messaging;
+using CollectR.Application.Common;
 using CollectR.Application.Contracts.Persistence;
 
 namespace CollectR.Application.Features.Collections.Commands.UpdateCollection;
@@ -8,9 +8,9 @@ namespace CollectR.Application.Features.Collections.Commands.UpdateCollection;
 internal sealed class UpdateCollectionCommandHandler(
     ICollectionRepository collectionRepository,
     IMapper mapper
-) : ICommandHandler<UpdateCollectionCommand, Result>
+) : ICommandHandler<UpdateCollectionCommand, Result<Unit>>
 {
-    public async Task<Result> Handle(
+    public async Task<Result<Unit>> Handle(
         UpdateCollectionCommand request,
         CancellationToken cancellationToken
     )

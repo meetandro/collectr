@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using CollectR.Application.Abstractions;
-using CollectR.Application.Abstractions.Messaging;
+using CollectR.Application.Common;
 using CollectR.Application.Contracts.Persistence;
 
 namespace CollectR.Application.Features.Categories.Commands.UpdateCategory;
@@ -8,9 +8,9 @@ namespace CollectR.Application.Features.Categories.Commands.UpdateCategory;
 internal sealed class UpdateCategoryCommandHandler(
     ICategoryRepository categoryRepository,
     IMapper mapper
-) : ICommandHandler<UpdateCategoryCommand, Result>
+) : ICommandHandler<UpdateCategoryCommand, Result<Unit>>
 {
-    public async Task<Result> Handle(
+    public async Task<Result<Unit>> Handle(
         UpdateCategoryCommand request,
         CancellationToken cancellationToken
     )

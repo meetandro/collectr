@@ -1,4 +1,5 @@
-﻿using CollectR.Application.Features.Collectibles.Commands.CreateCollectible;
+﻿using CollectR.Api.Wrappers;
+using CollectR.Application.Features.Collectibles.Commands.CreateCollectible;
 using CollectR.Application.Features.Collectibles.Commands.DeleteCollectible;
 using CollectR.Application.Features.Collectibles.Commands.UpdateCollectible;
 using CollectR.Application.Features.Collectibles.Commands.UpdateCollectibleTags;
@@ -22,9 +23,9 @@ public static class CollectibleEndpoints
 
         root.MapPut("/{id}", UpdateCollectible).DisableAntiforgery();
 
-        root.MapDelete("/{id}", DeleteCollectible);
-
         root.MapPut("/{id}/tags", UpdateCollectibleTags);
+
+        root.MapDelete("/{id}", DeleteCollectible);
     }
 
     public static async Task<IResult> GetAllCollectibles(IMediator mediator)
@@ -36,7 +37,7 @@ public static class CollectibleEndpoints
     public static async Task<IResult> GetCollectibleById(Guid id, IMediator mediator)
     {
         var result = await mediator.Send(new GetCollectibleByIdQuery(id));
-        return Results.Ok(result);
+        return ApiResult.FromResult(result);
     }
 
     public static async Task<IResult> CreateCollectible(
@@ -45,7 +46,7 @@ public static class CollectibleEndpoints
     )
     {
         var result = await mediator.Send(command);
-        return Results.Ok(result);
+        return ApiResult.FromResult(result);
     }
 
     public static async Task<IResult> UpdateCollectible(
@@ -54,18 +55,18 @@ public static class CollectibleEndpoints
     )
     {
         var result = await mediator.Send(command);
-        return Results.Ok(result);
-    }
-
-    public static async Task<IResult> DeleteCollectible(Guid id, IMediator mediator)
-    {
-        var result = await mediator.Send(new DeleteCollectibleCommand(id));
-        return Results.Ok(result);
+        return ApiResult.FromResult(result);
     }
 
     public static async Task<IResult> UpdateCollectibleTags(UpdateCollectibleTagsCommand command, IMediator mediator)
     {
         var result = await mediator.Send(command);
-        return Results.Ok(result);
+        return ApiResult.FromResult(result);
+    }
+
+    public static async Task<IResult> DeleteCollectible(Guid id, IMediator mediator)
+    {
+        var result = await mediator.Send(new DeleteCollectibleCommand(id));
+        return ApiResult.FromResult(result);
     }
 }

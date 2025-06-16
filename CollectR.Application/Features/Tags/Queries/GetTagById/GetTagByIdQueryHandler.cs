@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
-using CollectR.Application.Abstractions;
+using CollectR.Application.Common;
 using CollectR.Application.Contracts.Persistence;
 using MediatR;
 using Microsoft.EntityFrameworkCore;

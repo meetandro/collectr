@@ -1,13 +1,13 @@
 ﻿using CollectR.Application.Abstractions;
-using CollectR.Application.Abstractions.Messaging;
+using CollectR.Application.Common;
 using CollectR.Application.Contracts.Persistence;
 
 namespace CollectR.Application.Features.Collections.Commands.DeleteCollection;
 
 internal sealed class DeleteCollectionCommandHandler(ICollectionRepository collectionRepository)
-    : ICommandHandler<DeleteCollectionCommand, Result>
+    : ICommandHandler<DeleteCollectionCommand, Result<Unit>>
 {
-    public async Task<Result> Handle(
+    public async Task<Result<Unit>> Handle(
         DeleteCollectionCommand request,
         CancellationToken cancellationToken
     )

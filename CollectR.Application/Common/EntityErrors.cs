@@ -1,4 +1,4 @@
-﻿namespace CollectR.Application.Abstractions;
+﻿namespace CollectR.Application.Common;
 
 public static class EntityErrors
 {

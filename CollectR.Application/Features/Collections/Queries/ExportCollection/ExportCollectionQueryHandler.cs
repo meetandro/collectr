@@ -1,5 +1,5 @@
 ﻿using CollectR.Application.Abstractions;
-using CollectR.Application.Abstractions.Messaging;
+using CollectR.Application.Common;
 using CollectR.Application.Contracts.Persistence;
 using CollectR.Application.Contracts.Services;
 using Microsoft.EntityFrameworkCore;

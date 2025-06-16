@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using CollectR.Application.Abstractions;
-using CollectR.Application.Abstractions.Messaging;
+using CollectR.Application.Common;
 using CollectR.Application.Contracts.Persistence;
 using CollectR.Application.Contracts.Services;
 using CollectR.Domain;
@@ -14,9 +14,9 @@ internal sealed class UpdateCollectibleCommandHandler(
     IFileService fileService,
     IImageRepository imageRepository,
     IMapper mapper
-) : ICommandHandler<UpdateCollectibleCommand, Result>
+) : ICommandHandler<UpdateCollectibleCommand, Result<Unit>>
 {
-    public async Task<Result> Handle(
+    public async Task<Result<Unit>> Handle(
         UpdateCollectibleCommand request,
         CancellationToken cancellationToken
     )

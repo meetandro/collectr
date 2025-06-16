@@ -1,6 +1,6 @@
 ﻿using CollectR.Application.Abstractions;
-using CollectR.Application.Abstractions.Messaging;
+using CollectR.Application.Common;
 
 namespace CollectR.Application.Features.Categories.Commands.UpdateCategory;
 
-public sealed record UpdateCategoryCommand(Guid Id, string Name) : ICommand<Result>;
+public sealed record UpdateCategoryCommand(Guid Id, string Name) : ICommand<Result<Unit>>;

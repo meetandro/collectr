@@ -1,14 +1,14 @@
 ﻿using AutoMapper;
 using CollectR.Application.Abstractions;
-using CollectR.Application.Abstractions.Messaging;
+using CollectR.Application.Common;
 using CollectR.Application.Contracts.Persistence;
 
 namespace CollectR.Application.Features.Tags.Commands.UpdateTag;
 
 internal sealed class UpdateTagCommandHandler(ITagRepository tagRepository, IMapper mapper)
-    : ICommandHandler<UpdateTagCommand, Result>
+    : ICommandHandler<UpdateTagCommand, Result<Unit>>
 {
-    public async Task<Result> Handle(
+    public async Task<Result<Unit>> Handle(
         UpdateTagCommand request,
         CancellationToken cancellationToken
     )

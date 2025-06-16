@@ -1,8 +1,8 @@
 ﻿using System.Linq.Expressions;
 using AutoMapper;
-using CollectR.Application.Abstractions.Messaging;
+using CollectR.Application.Abstractions;
+using CollectR.Application.Common;
 using CollectR.Application.Contracts.Persistence;
-using CollectR.Application.Models;
 using CollectR.Domain;
 using CollectR.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
@@ -23,10 +23,11 @@ internal sealed class GetCollectiblesForCollectionQueryHandler(
         CancellationToken cancellationToken
     )
     {
-        IEnumerable<Collectible> collectibles = await context
-            .Collectibles.Where(c => c.CollectionId == request.Id)
+        IEnumerable<Collectible> collectibles = await context.Collectibles
+            .Where(c => c.CollectionId == request.Id)
             .Include(c => c.Images)
             .Include(c => c.CollectibleTags)
+            .AsSplitQuery() // check if this will mess legit everything up
             .AsNoTracking() // projectto mapper
             .ToListAsync(cancellationToken);
 
@@ -146,7 +147,7 @@ internal sealed class GetCollectiblesForCollectionQueryHandler(
         if (request.IsCollected is not null)
         {
             collectibles = collectibles.Where(c =>
-                c.IsCollected != null && c.IsCollected == request.IsCollected
+                c.IsCollected == request.IsCollected
             );
         }
 

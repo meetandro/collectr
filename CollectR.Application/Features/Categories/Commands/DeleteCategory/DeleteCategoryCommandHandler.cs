@@ -1,13 +1,13 @@
 ﻿using CollectR.Application.Abstractions;
-using CollectR.Application.Abstractions.Messaging;
+using CollectR.Application.Common;
 using CollectR.Application.Contracts.Persistence;
 
 namespace CollectR.Application.Features.Categories.Commands.DeleteCategory;
 
 internal sealed class DeleteCategoryCommandHandler(ICategoryRepository categoryRepository)
-    : ICommandHandler<DeleteCategoryCommand, Result>
+    : ICommandHandler<DeleteCategoryCommand, Result<Unit>>
 {
-    public async Task<Result> Handle(
+    public async Task<Result<Unit>> Handle(
         DeleteCategoryCommand request,
         CancellationToken cancellationToken
     )

@@ -22,7 +22,6 @@ public class ExportService : IExportService
         return Task.FromResult(stream.ToArray());
     }
 
-
     public Task<byte[]> ExportAsJson(CollectionDto collection)
     {
         var json = JsonSerializer.Serialize(collection, new JsonSerializerOptions { WriteIndented = true });

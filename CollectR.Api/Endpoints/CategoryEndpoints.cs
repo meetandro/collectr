@@ -5,6 +5,7 @@ using CollectR.Application.Features.Categories.Queries.GetCategories;
 using CollectR.Application.Features.Categories.Queries.GetCategoryById;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using CollectR.Api.Wrappers;
 
 namespace CollectR.Api.Endpoints;
 
@@ -34,7 +35,7 @@ public static class CategoryEndpoints
     public static async Task<IResult> GetCategoryById(Guid id, IMediator mediator)
     {
         var result = await mediator.Send(new GetCategoryByIdQuery(id));
-        return Results.Ok(result);
+        return ApiResult.FromResult(result);
     }
 
     public static async Task<IResult> CreateCategory(
@@ -43,7 +44,7 @@ public static class CategoryEndpoints
     )
     {
         var result = await mediator.Send(command);
-        return Results.Ok(result.Value);
+        return ApiResult.FromResult(result);
     }
 
     public static async Task<IResult> UpdateCategory(
@@ -52,12 +53,12 @@ public static class CategoryEndpoints
     )
     {
         var result = await mediator.Send(command);
-        return Results.Ok(result);
+        return ApiResult.FromResult(result);
     }
 
     public static async Task<IResult> DeleteCategory(Guid id, IMediator mediator)
     {
         var result = await mediator.Send(new DeleteCategoryCommand(id));
-        return Results.Ok(result);
+        return ApiResult.FromResult(result);
     }
 }

@@ -1,5 +1,5 @@
 ﻿using CollectR.Application.Abstractions;
-using CollectR.Application.Abstractions.Messaging;
+using CollectR.Application.Common;
 using CollectR.Application.Contracts.Persistence;
 using CollectR.Application.Contracts.Services;
 
@@ -8,9 +8,9 @@ namespace CollectR.Application.Features.Collectibles.Commands.DeleteCollectible;
 internal sealed class DeleteCollectibleCommandHandler(
     ICollectibleRepository collectibleRepository,
     IFileService fileService
-) : ICommandHandler<DeleteCollectibleCommand, Result>
+) : ICommandHandler<DeleteCollectibleCommand, Result<Unit>>
 {
-    public async Task<Result> Handle(
+    public async Task<Result<Unit>> Handle(
         DeleteCollectibleCommand request,
         CancellationToken cancellationToken
     )

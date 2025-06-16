@@ -1,5 +1,5 @@
 ﻿using CollectR.Application.Abstractions;
-using CollectR.Application.Abstractions.Messaging;
+using CollectR.Application.Common;
 
 namespace CollectR.Application.Features.Tags.Commands.CreateTag;
 

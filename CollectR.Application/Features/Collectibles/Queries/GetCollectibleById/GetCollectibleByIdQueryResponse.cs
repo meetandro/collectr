@@ -2,7 +2,7 @@
 
 namespace CollectR.Application.Features.Collectibles.Queries.GetCollectibleById;
 
-internal sealed record GetCollectibleByIdQueryResponse(
+public sealed record GetCollectibleByIdQueryResponse(
     string Title,
     string? Description,
     string? Currency,

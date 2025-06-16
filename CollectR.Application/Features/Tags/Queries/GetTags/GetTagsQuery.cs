@@ -1,4 +1,4 @@
-﻿using CollectR.Application.Abstractions.Messaging;
+﻿using CollectR.Application.Abstractions;
 
 namespace CollectR.Application.Features.Tags.Queries.GetTags;
 

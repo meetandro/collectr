@@ -1,6 +1,6 @@
 ﻿namespace CollectR.Application.Features.Collections.Queries.GetCollectionById;
 
-internal sealed record GetCollectionByIdQueryResponse(
+public sealed record GetCollectionByIdQueryResponse(
     Guid Id,
     string Name,
     string? Description,

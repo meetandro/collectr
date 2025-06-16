@@ -1,4 +1,5 @@
-﻿using CollectR.Application.Features.Tags.Commands.CreateTag;
+﻿using CollectR.Api.Wrappers;
+using CollectR.Application.Features.Tags.Commands.CreateTag;
 using CollectR.Application.Features.Tags.Commands.DeleteTag;
 using CollectR.Application.Features.Tags.Commands.UpdateTag;
 using CollectR.Application.Features.Tags.Queries.GetTagById;
@@ -34,7 +35,7 @@ public static class TagEndpoints
     public static async Task<IResult> GetTagById(Guid id, IMediator mediator)
     {
         var result = await mediator.Send(new GetTagByIdQuery(id));
-        return Results.Ok(result);
+        return ApiResult.FromResult(result);
     }
 
     public static async Task<IResult> CreateTag(
@@ -43,7 +44,7 @@ public static class TagEndpoints
     )
     {
         var result = await mediator.Send(command);
-        return Results.Ok(result);
+        return ApiResult.FromResult(result);
     }
 
     public static async Task<IResult> UpdateTag(
@@ -52,12 +53,12 @@ public static class TagEndpoints
     )
     {
         var result = await mediator.Send(command);
-        return Results.Ok(result);
+        return ApiResult.FromResult(result);
     }
 
     public static async Task<IResult> DeleteTag(Guid id, IMediator mediator)
     {
         var result = await mediator.Send(new DeleteTagCommand(id));
-        return Results.Ok(result);
+        return ApiResult.FromResult(result);
     }
 }

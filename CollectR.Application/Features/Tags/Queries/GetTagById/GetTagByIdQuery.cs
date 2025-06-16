@@ -1,4 +1,4 @@
-﻿using CollectR.Application.Abstractions;
+﻿using CollectR.Application.Common;
 using MediatR;
 
 namespace CollectR.Application.Features.Tags.Queries.GetTagById;

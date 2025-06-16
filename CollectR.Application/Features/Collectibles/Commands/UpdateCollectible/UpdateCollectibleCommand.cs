@@ -1,5 +1,5 @@
 ﻿using CollectR.Application.Abstractions;
-using CollectR.Application.Abstractions.Messaging;
+using CollectR.Application.Common;
 using CollectR.Domain.Enums;
 using Microsoft.AspNetCore.Http;
 
@@ -20,4 +20,4 @@ public sealed record UpdateCollectibleCommand(
     Guid CategoryId,
     string ExistingImageUris,
     IFormFileCollection? NewImages
-) : ICommand<Result>;
+) : ICommand<Result<Unit>>;

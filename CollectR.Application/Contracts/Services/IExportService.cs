@@ -1,5 +1,4 @@
 ﻿using CollectR.Application.Features.Collections.Queries.ExportCollection;
-using CollectR.Domain;
 
 namespace CollectR.Application.Contracts.Services;
 

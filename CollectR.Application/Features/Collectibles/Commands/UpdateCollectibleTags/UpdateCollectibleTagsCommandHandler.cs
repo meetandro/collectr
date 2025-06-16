@@ -1,14 +1,14 @@
 ﻿using CollectR.Application.Abstractions;
-using CollectR.Application.Abstractions.Messaging;
+using CollectR.Application.Common;
 using CollectR.Application.Contracts.Persistence;
 using CollectR.Domain;
 using Microsoft.EntityFrameworkCore;
 
 namespace CollectR.Application.Features.Collectibles.Commands.UpdateCollectibleTags;
 
-internal sealed class UpdateCollectibleTagsCommandHandler(ICollectibleRepository collectibleRepository, IApplicationDbContext context) : ICommandHandler<UpdateCollectibleTagsCommand, Result>
+internal sealed class UpdateCollectibleTagsCommandHandler(ICollectibleRepository collectibleRepository, IApplicationDbContext context) : ICommandHandler<UpdateCollectibleTagsCommand, Result<Unit>>
 {
-    public async Task<Result> Handle(UpdateCollectibleTagsCommand request, CancellationToken cancellationToken)
+    public async Task<Result<Unit>> Handle(UpdateCollectibleTagsCommand request, CancellationToken cancellationToken)
     {
         var collectible = await context.Collectibles
             .Include(c => c.CollectibleTags)

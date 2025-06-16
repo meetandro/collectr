@@ -1,12 +1,14 @@
-﻿using CollectR.Application.Features.Collections.Commands.CreateCollection;
+﻿using CollectR.Api.Wrappers;
+using CollectR.Application.Contracts.Services;
+using CollectR.Application.Features.Collections.Commands.CreateCollection;
 using CollectR.Application.Features.Collections.Commands.DeleteCollection;
+using CollectR.Application.Features.Collections.Commands.ImportCollection;
 using CollectR.Application.Features.Collections.Commands.UpdateCollection;
 using CollectR.Application.Features.Collections.Queries.ExportCollection;
 using CollectR.Application.Features.Collections.Queries.GetCollectiblesForCollection;
 using CollectR.Application.Features.Collections.Queries.GetCollectionById;
 using CollectR.Application.Features.Collections.Queries.GetCollections;
 using CollectR.Application.Features.Collections.Queries.GetTagsForCollection;
-using CollectR.Application.Features.Collections.Queries.ImportCollection;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -22,12 +24,6 @@ public static class CollectionEndpoints
 
         root.MapGet("/{id}", GetCollectionById);
 
-        root.MapPost("", CreateCollection);
-
-        root.MapPut("/{id}", UpdateCollection);
-
-        root.MapDelete("/{id}", DeleteCollection);
-
         root.MapGet("/{id}/collectibles", GetCollectiblesForCollection);
 
         root.MapGet("/{id}/tags", GetTagsForCollection);
@@ -35,6 +31,12 @@ public static class CollectionEndpoints
         root.MapGet("/{id}/export", ExportCollection);
 
         root.MapPost("/import", ImportCollection).DisableAntiforgery();
+
+        root.MapPost("", CreateCollection);
+
+        root.MapPut("/{id}", UpdateCollection);
+
+        root.MapDelete("/{id}", DeleteCollection);
     }
 
     public static async Task<IResult> GetAllCollections(IMediator mediator)
@@ -46,31 +48,7 @@ public static class CollectionEndpoints
     public static async Task<IResult> GetCollectionById(Guid id, IMediator mediator)
     {
         var result = await mediator.Send(new GetCollectionByIdQuery(id));
-        return Results.Ok(result);
-    }
-
-    public static async Task<IResult> CreateCollection(
-        [FromBody] CreateCollectionCommand command,
-        IMediator mediator
-    )
-    {
-        var result = await mediator.Send(command);
-        return Results.Ok(result);
-    }
-
-    public static async Task<IResult> UpdateCollection(
-        [FromBody] UpdateCollectionCommand command,
-        IMediator mediator
-    )
-    {
-        var result = await mediator.Send(command);
-        return Results.Ok(result);
-    }
-
-    public static async Task<IResult> DeleteCollection(Guid id, IMediator mediator)
-    {
-        var result = await mediator.Send(new DeleteCollectionCommand(id));
-        return Results.Ok(result);
+        return ApiResult.FromResult(result);
     }
 
     public static async Task<IResult> GetCollectiblesForCollection(
@@ -84,29 +62,43 @@ public static class CollectionEndpoints
 
     public static async Task<IResult> GetTagsForCollection(Guid id, IMediator mediator)
     {
-        var query = new GetTagsForCollectionQuery(id);
-        var result = await mediator.Send(query);
+        var result = await mediator.Send(new GetTagsForCollectionQuery(id));
         return Results.Ok(result);
     }
 
     public static async Task<IResult> ExportCollection(Guid id, string format, IMediator mediator)
     {
-        var query = new ExportCollectionQuery(id, format);
-        var result = await mediator.Send(query);
-        return Results.File(result.Value.FileContents, result.Value.ContentType, result.Value.FileName);
+        var result = await mediator.Send(new ExportCollectionQuery(id, format));
+        return ApiResult.FromResult(result);
     }
 
-    public static async Task<IResult> ImportCollection(IFormFile file, IMediator mediator)
+    public static async Task<IResult> ImportCollection(IFormFile file, IFileService fileService, IMediator mediator)
     {
-        var query = new ImportCollectionCommand(await ToByteArrayAsync(file), file.FileName);
-        var result = await mediator.Send(query);
-        return Results.Ok();
+        var result = await mediator.Send(new ImportCollectionCommand(await fileService.ConvertToByteArrayAsync(file), file.FileName));
+        return ApiResult.FromResult(result);
     }
 
-    public static async Task<byte[]> ToByteArrayAsync(IFormFile file)
+    public static async Task<IResult> CreateCollection(
+        [FromBody] CreateCollectionCommand command,
+        IMediator mediator
+    )
     {
-        using var memoryStream = new MemoryStream();
-        await file.CopyToAsync(memoryStream);
-        return memoryStream.ToArray();
+        var result = await mediator.Send(command);
+        return ApiResult.FromResult(result);
+    }
+
+    public static async Task<IResult> UpdateCollection(
+        [FromBody] UpdateCollectionCommand command,
+        IMediator mediator
+    )
+    {
+        var result = await mediator.Send(command);
+        return ApiResult.FromResult(result);
+    }
+
+    public static async Task<IResult> DeleteCollection(Guid id, IMediator mediator)
+    {
+        var result = await mediator.Send(new DeleteCollectionCommand(id));
+        return ApiResult.FromResult(result);
     }
 }

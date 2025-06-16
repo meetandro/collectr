@@ -1,6 +1,6 @@
 ﻿using CollectR.Application.Abstractions;
-using CollectR.Application.Abstractions.Messaging;
+using CollectR.Application.Common;
 
 namespace CollectR.Application.Features.Categories.Commands.DeleteCategory;
 
-public sealed record DeleteCategoryCommand(Guid Id) : ICommand<Result>;
+public sealed record DeleteCategoryCommand(Guid Id) : ICommand<Result<Unit>>;

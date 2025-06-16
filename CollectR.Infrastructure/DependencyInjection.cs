@@ -1,5 +1,4 @@
-﻿using CollectR.Application.Contracts.Persistence;
-using CollectR.Application.Contracts.Services;
+﻿using CollectR.Application.Contracts.Services;
 using CollectR.Infrastructure.Services;
 using Microsoft.Extensions.DependencyInjection;
 

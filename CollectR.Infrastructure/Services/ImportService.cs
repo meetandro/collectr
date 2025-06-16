@@ -7,16 +7,30 @@ using System.Text;
 using System.Xml.Serialization;
 using CollectR.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
+using CollectR.Application.Contracts.Services;
 
 namespace CollectR.Infrastructure.Services;
 
-public sealed class ImportService : IImportService
+public sealed class ImportService(IApplicationDbContext context) : IImportService
 {
-    private readonly IApplicationDbContext _context;
-
-    public ImportService(IApplicationDbContext context)
+    public async Task<bool> ImportFromExcel(byte[] content, CancellationToken cancellationToken)
     {
-        _context = context ?? throw new ArgumentNullException(nameof(context));
+        try
+        {
+            using var workbook = new XLWorkbook(new MemoryStream(content));
+            var worksheet = workbook.Worksheets.FirstOrDefault();
+
+            if (worksheet == null)
+                return false;
+
+            var collectionDto = ParseWorksheet(worksheet);
+            await ImportCollection(collectionDto, cancellationToken);
+            return true;
+        }
+        catch (Exception)
+        {
+            return false;
+        }
     }
 
     public async Task<bool> ImportFromJson(byte[] content, CancellationToken cancellationToken)
@@ -30,7 +44,7 @@ public sealed class ImportService : IImportService
             await ImportCollection(collectionDto, cancellationToken);
             return true;
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             return false;
         }
@@ -44,26 +58,6 @@ public sealed class ImportService : IImportService
             using var ms = new MemoryStream(content);
 
             var collectionDto = (CollectionDto)serializer.Deserialize(ms);
-            await ImportCollection(collectionDto, cancellationToken);
-            return true;
-        }
-        catch (Exception ex)
-        {
-            return false;
-        }
-    }
-
-    public async Task<bool> ImportFromExcel(byte[] content, CancellationToken cancellationToken)
-    {
-        try
-        {
-            using var workbook = new XLWorkbook(new MemoryStream(content));
-            var worksheet = workbook.Worksheets.FirstOrDefault();
-
-            if (worksheet == null)
-                return false;
-
-            var collectionDto = ParseWorksheet(worksheet);
             await ImportCollection(collectionDto, cancellationToken);
             return true;
         }
@@ -173,7 +167,6 @@ public sealed class ImportService : IImportService
         return collection;
     }
 
-
     private async Task ImportCollection(CollectionDto collectionDto, CancellationToken cancellationToken)
     {
         var collection = new Collection
@@ -185,13 +178,13 @@ public sealed class ImportService : IImportService
         foreach (var collectibleDto in collectionDto.Collectibles)
         {
             // Check if category exists
-            var category = await _context.Categories
+            var category = await context.Categories
                 .FirstOrDefaultAsync(c => c.Name == collectibleDto.Category, cancellationToken);
 
             if (category is null)
             {
                 category = new Category { Name = collectibleDto.Category };
-                _context.Categories.Add(category);
+                context.Categories.Add(category);
                 // No need to SaveChanges yet — EF Core will resolve this during SaveChangesAsync later
             }
 
@@ -215,13 +208,13 @@ public sealed class ImportService : IImportService
             // Handle tags
             foreach (var tagDto in collectibleDto.Tags)
             {
-                var tag = await _context.Tags
+                var tag = await context.Tags
                     .FirstOrDefaultAsync(t => t.Name == tagDto.Name && t.Hex == tagDto.Hex, cancellationToken);
 
                 if (tag is null)
                 {
                     tag = new Tag { Name = tagDto.Name, Hex = tagDto.Hex, CollectionId = collection.Id };
-                    _context.Tags.Add(tag);
+                    context.Tags.Add(tag);
                 }
 
                 collectible.CollectibleTags.Add(new CollectibleTag
@@ -233,8 +226,7 @@ public sealed class ImportService : IImportService
             collection.Collectibles.Add(collectible);
         }
 
-        _context.Collections.Add(collection);
-        await _context.SaveChangesAsync(cancellationToken);
+        context.Collections.Add(collection);
+        await context.SaveChangesAsync(cancellationToken);
     }
-
 }

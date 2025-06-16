@@ -5,6 +5,13 @@ namespace CollectR.Infrastructure.Services;
 
 public class FileService(string root) : IFileService // optimize root
 {
+    public async Task<byte[]> ConvertToByteArrayAsync(IFormFile file)
+    {
+        using var memoryStream = new MemoryStream();
+        await file.CopyToAsync(memoryStream);
+        return memoryStream.ToArray();
+    }
+
     public async Task<string> SaveFileInFolderAsync(IFormFile file, string folder)
     {
         string fileExtension = Path.GetExtension(file.FileName);
