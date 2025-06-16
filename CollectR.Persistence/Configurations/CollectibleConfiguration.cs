@@ -14,16 +14,13 @@ internal sealed class CollectibleConfiguration : IEntityTypeConfiguration<Collec
 
         builder.Property(i => i.Color).HasConversion<int>();
 
+        builder.OwnsOne(c => c.Attributes);
+
         builder
             .HasOne(c => c.Category)
             .WithMany(cc => cc.Collectibles)
             .HasForeignKey(c => c.CategoryId)
             .OnDelete(DeleteBehavior.Restrict);
-
-        builder
-            .HasOne(c => c.Attributes)
-            .WithOne(a => a.Collectible)
-            .HasForeignKey<Attributes>(a => a.CollectibleId)
-            .OnDelete(DeleteBehavior.Cascade);
     }
 }
+

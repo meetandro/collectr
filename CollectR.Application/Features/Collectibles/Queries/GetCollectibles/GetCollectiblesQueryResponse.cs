@@ -13,7 +13,7 @@ internal sealed record GetCollectiblesQueryResponse(
     int? SortIndex,
     Color? Color,
     Condition? Condition,
-    Guid AttributesId,
+    string Metadata,
     Guid CategoryId,
     Guid CollectionId,
     IEnumerable<string> ImageUris,

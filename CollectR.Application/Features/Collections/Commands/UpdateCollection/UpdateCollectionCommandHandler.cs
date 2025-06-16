@@ -8,9 +8,9 @@ namespace CollectR.Application.Features.Collections.Commands.UpdateCollection;
 internal sealed class UpdateCollectionCommandHandler(
     ICollectionRepository collectionRepository,
     IMapper mapper
-) : ICommandHandler<UpdateCollectionCommand, Result<UpdateCollectionCommandResponse>>
+) : ICommandHandler<UpdateCollectionCommand, Result>
 {
-    public async Task<Result<UpdateCollectionCommandResponse>> Handle(
+    public async Task<Result> Handle(
         UpdateCollectionCommand request,
         CancellationToken cancellationToken
     )
@@ -24,10 +24,8 @@ internal sealed class UpdateCollectionCommandHandler(
 
         mapper.Map(request, collection);
 
-        var result = mapper.Map<UpdateCollectionCommandResponse>(
-            collectionRepository.Update(collection)
-        );
+        collectionRepository.Update(collection);
 
-        return result;
+        return Result.Success();
     }
 }

@@ -28,8 +28,6 @@ public class TagMappings : Profile
 
         CreateMap<UpdateTagCommand, Tag>().ReverseMap();
 
-        CreateMap<UpdateTagCommandResponse, Tag>().ReverseMap();
-
         CreateMap<Tag, GetTagsQueryResponse>()
             .ForCtorParam(
                 nameof(GetTagsQueryResponse.CollectibleIds),

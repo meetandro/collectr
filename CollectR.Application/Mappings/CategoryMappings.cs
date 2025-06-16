@@ -21,8 +21,6 @@ public class CategoryMappings : Profile
 
         CreateMap<UpdateCategoryCommand, Category>().ReverseMap();
 
-        CreateMap<UpdateCategoryCommandResponse, Category>().ReverseMap();
-
         CreateMap<Category, GetCategoriesQueryResponse>()
             .ForCtorParam(
                 nameof(GetCategoryByIdQueryResponse.CollectibleIds),

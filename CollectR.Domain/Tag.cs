@@ -9,7 +9,6 @@ public class Tag : Entity
     public string Hex { get; set; } = "#FFFFFF";
 
     public Guid CollectionId { get; set; }
-
     public Collection? Collection { get; set; }
 
     public ICollection<CollectibleTag> CollectibleTags { get; set; } = [];

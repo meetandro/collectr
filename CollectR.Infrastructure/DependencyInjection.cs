@@ -1,4 +1,5 @@
-﻿using CollectR.Application.Contracts.Services;
+﻿using CollectR.Application.Contracts.Persistence;
+using CollectR.Application.Contracts.Services;
 using CollectR.Infrastructure.Services;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -11,6 +12,10 @@ public static class DependencyInjection
         Func<IServiceProvider, string> webRootPath
     )
     {
+        services.AddScoped<IExportService, ExportService>();
+
+        services.AddScoped<IImportService, ImportService>();
+
         services.AddScoped<IFileService, FileService>(provider =>
         {
             var path = webRootPath(provider);

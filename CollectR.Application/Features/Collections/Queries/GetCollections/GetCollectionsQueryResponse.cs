@@ -1,8 +1,8 @@
 ﻿namespace CollectR.Application.Features.Collections.Queries.GetCollections;
 
 internal sealed record GetCollectionsQueryResponse(
-    int Id,
+    Guid Id,
     string Name,
     string? Description,
-    IEnumerable<int> CollectibleIds
+    IEnumerable<Guid> CollectibleIds
 );

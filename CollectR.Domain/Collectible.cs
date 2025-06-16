@@ -15,24 +15,20 @@ public class Collectible : Entity
 
     public DateTime? AcquiredDate { get; set; }
 
-    public bool? IsCollected { get; set; }
+    public bool IsCollected { get; set; } = false;
 
-    public int? SortIndex { get; set; }
+    public int SortIndex { get; set; } = 100;
 
     public Color? Color { get; set; }
 
     public Condition? Condition { get; set; }
 
-    public Guid AttributesId { get; set; }
-
     public Attributes? Attributes { get; set; }
 
     public Guid CategoryId { get; set; }
-
     public Category? Category { get; set; }
 
     public Guid CollectionId { get; set; }
-
     public Collection? Collection { get; set; }
 
     public ICollection<CollectibleTag> CollectibleTags { get; set; } = [];

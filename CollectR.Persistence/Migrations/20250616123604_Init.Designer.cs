@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CollectR.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250615171038_Init")]
+    [Migration("20250616123604_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -56,9 +56,6 @@ namespace CollectR.Persistence.Migrations
                     b.Property<Guid>("CategoryId")
                         .HasColumnType("TEXT");
 
-                    b.Property<Guid>("CollectibleAttributesId")
-                        .HasColumnType("TEXT");
-
                     b.Property<Guid>("CollectionId")
                         .HasColumnType("TEXT");
 
@@ -77,7 +74,7 @@ namespace CollectR.Persistence.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("TEXT");
 
-                    b.Property<bool?>("IsCollected")
+                    b.Property<bool>("IsCollected")
                         .HasColumnType("INTEGER");
 
                     b.Property<bool>("IsDeleted")
@@ -103,27 +100,6 @@ namespace CollectR.Persistence.Migrations
                     b.HasIndex("CollectionId");
 
                     b.ToTable("Collectibles");
-                });
-
-            modelBuilder.Entity("CollectR.Domain.CollectibleAttributes", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
-
-                    b.Property<Guid>("CollectibleId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Metadata")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CollectibleId")
-                        .IsUnique();
-
-                    b.ToTable("CollectibleAttributes");
                 });
 
             modelBuilder.Entity("CollectR.Domain.CollectibleTag", b =>
@@ -247,20 +223,28 @@ namespace CollectR.Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.OwnsOne("CollectR.Domain.Attributes", "Attributes", b1 =>
+                        {
+                            b1.Property<Guid>("CollectibleId")
+                                .HasColumnType("TEXT");
+
+                            b1.Property<string>("Metadata")
+                                .IsRequired()
+                                .HasColumnType("TEXT");
+
+                            b1.HasKey("CollectibleId");
+
+                            b1.ToTable("Collectibles");
+
+                            b1.WithOwner()
+                                .HasForeignKey("CollectibleId");
+                        });
+
+                    b.Navigation("Attributes");
+
                     b.Navigation("Category");
 
                     b.Navigation("Collection");
-                });
-
-            modelBuilder.Entity("CollectR.Domain.CollectibleAttributes", b =>
-                {
-                    b.HasOne("CollectR.Domain.Collectible", "Collectible")
-                        .WithOne("CollectibleAttributes")
-                        .HasForeignKey("CollectR.Domain.CollectibleAttributes", "CollectibleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Collectible");
                 });
 
             modelBuilder.Entity("CollectR.Domain.CollectibleTag", b =>
@@ -311,8 +295,6 @@ namespace CollectR.Persistence.Migrations
 
             modelBuilder.Entity("CollectR.Domain.Collectible", b =>
                 {
-                    b.Navigation("CollectibleAttributes");
-
                     b.Navigation("CollectibleTags");
 
                     b.Navigation("Images");

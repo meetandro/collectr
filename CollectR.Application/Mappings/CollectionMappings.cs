@@ -21,8 +21,6 @@ public class CollectionMappings : Profile
 
         CreateMap<UpdateCollectionCommand, Collection>().ReverseMap();
 
-        CreateMap<UpdateCollectionCommandResponse, Collection>().ReverseMap();
-
         CreateMap<Collection, GetCollectionsQueryResponse>()
             .ForCtorParam(
                 nameof(GetCollectionByIdQueryResponse.CollectibleIds),

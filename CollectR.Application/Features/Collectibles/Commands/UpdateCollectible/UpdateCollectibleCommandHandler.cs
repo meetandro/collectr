@@ -2,6 +2,7 @@
 using CollectR.Application.Abstractions;
 using CollectR.Application.Abstractions.Messaging;
 using CollectR.Application.Contracts.Persistence;
+using CollectR.Application.Contracts.Services;
 using CollectR.Domain;
 using Microsoft.EntityFrameworkCore;
 
@@ -10,16 +11,18 @@ namespace CollectR.Application.Features.Collectibles.Commands.UpdateCollectible;
 internal sealed class UpdateCollectibleCommandHandler(
     ICollectibleRepository collectibleRepository,
     IApplicationDbContext context,
+    IFileService fileService,
+    IImageRepository imageRepository,
     IMapper mapper
-) : ICommandHandler<UpdateCollectibleCommand, Result<UpdateCollectibleCommandResponse>>
+) : ICommandHandler<UpdateCollectibleCommand, Result>
 {
-    public async Task<Result<UpdateCollectibleCommandResponse>> Handle(
+    public async Task<Result> Handle(
         UpdateCollectibleCommand request,
         CancellationToken cancellationToken
     )
     {
-        var collectible = await context
-            .Collectibles.Include(c => c.CollectibleTags)
+        var collectible = await context.Collectibles
+            .Include(c => c.CollectibleTags)
             .Include(c => c.Images)
             .FirstOrDefaultAsync(c => c.Id == request.Id, cancellationToken);
 
@@ -30,27 +33,55 @@ internal sealed class UpdateCollectibleCommandHandler(
 
         mapper.Map(request, collectible);
 
-        HandleTags(request, collectible);
-        await HandleImagesAsync(request, collectible, cancellationToken);
+        await DeleteExistingImagesIfRequestDoesntContainThem(fileService, imageRepository, request, collectible);
 
-        var result = collectibleRepository.Update(collectible);
+        await CreateNewImagesIfRequestContainsThem(fileService, imageRepository, request, collectible);
 
-        return mapper.Map<UpdateCollectibleCommandResponse>(result);
+        collectibleRepository.Update(collectible);
+
+        return Result.Success();
     }
 
-    private void HandleTags(UpdateCollectibleCommand request, Collectible collectible)
+    private static async Task<List<Image>> CreateNewImagesIfRequestContainsThem(IFileService fileService, IImageRepository imageRepository, UpdateCollectibleCommand request, Collectible? collectible)
     {
-        // Your custom tag logic goes here.
-        // Example: collectible.CollectibleTags = await _yourTagService.UpdateTagsAsync(...);
+        var imageUrls = new List<Image>();
+
+        if (request.NewImages is not null && request.NewImages.Any())
+        {
+            foreach (var file in request.NewImages)
+            {
+                var savedFileName = await fileService.SaveFileInFolderAsync(file, "images");
+                var imageUrl = $"/images/{savedFileName}";
+
+                imageUrls.Add(
+                    new Image
+                    {
+                        Uri = imageUrl,
+                        CollectibleId = collectible.Id,
+                    }
+                );
+            }
+
+            await imageRepository.CreateRangeAsync(imageUrls); // test createdAt props
+        }
+
+        return imageUrls;
     }
 
-    private async Task HandleImagesAsync(
-        UpdateCollectibleCommand request,
-        Collectible collectible,
-        CancellationToken cancellationToken
-    )
+    private static async Task DeleteExistingImagesIfRequestDoesntContainThem(IFileService fileService, IImageRepository imageRepository, UpdateCollectibleCommand request, Collectible? collectible)
     {
-        // Your custom image handling logic goes here.
-        // Example: collectible.Images = await _yourImageService.ProcessImagesAsync(...);
+        string[] trueUris = request.ExistingImageUris.Split(',');
+
+        if (collectible.Images is not null && collectible.Images.Count > 0 && request.ExistingImageUris is not null && trueUris.Length != 0)
+        {
+            foreach (var file in collectible.Images)
+            {
+                if (!request.ExistingImageUris.Contains(file.Uri))
+                {
+                    fileService.DeleteFileInFolder(file.Uri, "images");
+                    await imageRepository.HardDeleteAsync(file.Id); // config
+                }
+            }
+        }
     }
 }

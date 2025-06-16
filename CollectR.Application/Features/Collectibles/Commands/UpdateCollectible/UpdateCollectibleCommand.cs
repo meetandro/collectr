@@ -1,12 +1,13 @@
 ﻿using CollectR.Application.Abstractions;
 using CollectR.Application.Abstractions.Messaging;
 using CollectR.Domain.Enums;
+using Microsoft.AspNetCore.Http;
 
 namespace CollectR.Application.Features.Collectibles.Commands.UpdateCollectible;
 
 public sealed record UpdateCollectibleCommand(
     Guid Id,
-    string Title,
+    string? Title,
     string? Description,
     string? Currency,
     decimal? Value,
@@ -14,5 +15,9 @@ public sealed record UpdateCollectibleCommand(
     bool? IsCollected,
     int? SortIndex,
     Color? Color,
-    Condition? Condition
-) : ICommand<Result<UpdateCollectibleCommandResponse>>;
+    Condition? Condition,
+    string? Metadata,
+    Guid CategoryId,
+    string ExistingImageUris,
+    IFormFileCollection? NewImages
+) : ICommand<Result>;

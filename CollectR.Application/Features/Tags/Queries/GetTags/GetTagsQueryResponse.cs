@@ -1,7 +1,7 @@
 ﻿namespace CollectR.Application.Features.Tags.Queries.GetTags;
 
 internal sealed record GetTagsQueryResponse(
-    int Id,
+    Guid Id,
     string Name,
     string Hex,
     Guid CollectionId,

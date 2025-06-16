@@ -6,9 +6,9 @@ using CollectR.Application.Contracts.Persistence;
 namespace CollectR.Application.Features.Tags.Commands.UpdateTag;
 
 internal sealed class UpdateTagCommandHandler(ITagRepository tagRepository, IMapper mapper)
-    : ICommandHandler<UpdateTagCommand, Result<UpdateTagCommandResponse>>
+    : ICommandHandler<UpdateTagCommand, Result>
 {
-    public async Task<Result<UpdateTagCommandResponse>> Handle(
+    public async Task<Result> Handle(
         UpdateTagCommand request,
         CancellationToken cancellationToken
     )
@@ -22,8 +22,8 @@ internal sealed class UpdateTagCommandHandler(ITagRepository tagRepository, IMap
 
         mapper.Map(request, tag);
 
-        var result = mapper.Map<UpdateTagCommandResponse>(tagRepository.Update(tag));
+        tagRepository.Update(tag);
 
-        return result;
+        return Result.Success();
     }
 }

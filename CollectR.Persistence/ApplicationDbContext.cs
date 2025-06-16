@@ -13,8 +13,6 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public new DbSet<TEntity> Set<TEntity>()
         where TEntity : Entity => base.Set<TEntity>();
 
-    public DbSet<Attributes> Attributes { get; set; }
-
     public DbSet<Category> Categories { get; set; }
 
     public DbSet<Collectible> Collectibles { get; set; }

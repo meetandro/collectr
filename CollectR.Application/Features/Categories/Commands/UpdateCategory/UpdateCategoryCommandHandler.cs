@@ -8,9 +8,9 @@ namespace CollectR.Application.Features.Categories.Commands.UpdateCategory;
 internal sealed class UpdateCategoryCommandHandler(
     ICategoryRepository categoryRepository,
     IMapper mapper
-) : ICommandHandler<UpdateCategoryCommand, Result<UpdateCategoryCommandResponse>>
+) : ICommandHandler<UpdateCategoryCommand, Result>
 {
-    public async Task<Result<UpdateCategoryCommandResponse>> Handle(
+    public async Task<Result> Handle(
         UpdateCategoryCommand request,
         CancellationToken cancellationToken
     )
@@ -24,8 +24,8 @@ internal sealed class UpdateCategoryCommandHandler(
 
         mapper.Map(request, category);
 
-        var result = mapper.Map<UpdateCategoryCommandResponse>(categoryRepository.Update(category));
+        categoryRepository.Update(category);
 
-        return result;
+        return Result.Success();
     }
 }

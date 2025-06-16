@@ -2,9 +2,9 @@
 
 public enum Condition
 {
-    Mint,
-    VeryGood,
-    Good,
-    Acceptable,
-    Damaged,
+    OneStar,
+    TwoStars,
+    ThreeStars,
+    FourStars,
+    FiveStars,
 }

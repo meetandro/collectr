@@ -1,6 +1,7 @@
 ﻿using CollectR.Application.Features.Collectibles.Commands.CreateCollectible;
 using CollectR.Application.Features.Collectibles.Commands.DeleteCollectible;
 using CollectR.Application.Features.Collectibles.Commands.UpdateCollectible;
+using CollectR.Application.Features.Collectibles.Commands.UpdateCollectibleTags;
 using CollectR.Application.Features.Collectibles.Queries.GetCollectibleById;
 using CollectR.Application.Features.Collectibles.Queries.GetCollectibles;
 using MediatR;
@@ -24,8 +25,6 @@ public static class CollectibleEndpoints
         root.MapDelete("/{id}", DeleteCollectible);
 
         root.MapPut("/{id}/tags", UpdateCollectibleTags);
-
-        root.MapPost("/{id}/images", UpdateCollectibleImages);
     }
 
     public static async Task<IResult> GetAllCollectibles(IMediator mediator)
@@ -64,13 +63,9 @@ public static class CollectibleEndpoints
         return Results.Ok(result);
     }
 
-    public static Task<IResult> UpdateCollectibleTags()
+    public static async Task<IResult> UpdateCollectibleTags(UpdateCollectibleTagsCommand command, IMediator mediator)
     {
-        throw new NotImplementedException();
-    }
-
-    public static Task<IResult> UpdateCollectibleImages()
-    {
-        throw new NotImplementedException();
+        var result = await mediator.Send(command);
+        return Results.Ok(result);
     }
 }

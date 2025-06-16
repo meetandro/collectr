@@ -13,8 +13,6 @@ public interface IApplicationDbContext
 
     public DbSet<Collectible> Collectibles { get; }
 
-    public DbSet<Attributes> Attributes { get; }
-
     public DbSet<Collection> Collections { get; }
 
     public DbSet<Image> Images { get; }

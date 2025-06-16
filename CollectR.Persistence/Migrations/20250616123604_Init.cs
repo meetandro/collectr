@@ -52,11 +52,11 @@ namespace CollectR.Persistence.Migrations
                     Currency = table.Column<string>(type: "TEXT", nullable: true),
                     Value = table.Column<decimal>(type: "decimal(10, 2)", nullable: true),
                     AcquiredDate = table.Column<DateTime>(type: "TEXT", nullable: true),
-                    IsCollected = table.Column<bool>(type: "INTEGER", nullable: true),
+                    IsCollected = table.Column<bool>(type: "INTEGER", nullable: false),
                     SortIndex = table.Column<int>(type: "INTEGER", nullable: false),
                     Color = table.Column<int>(type: "INTEGER", nullable: true),
                     Condition = table.Column<int>(type: "INTEGER", nullable: true),
-                    CollectibleAttributesId = table.Column<Guid>(type: "TEXT", nullable: false),
+                    Attributes_Metadata = table.Column<string>(type: "TEXT", nullable: true),
                     CategoryId = table.Column<Guid>(type: "TEXT", nullable: false),
                     CollectionId = table.Column<Guid>(type: "TEXT", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "TEXT", nullable: false),
@@ -99,25 +99,6 @@ namespace CollectR.Persistence.Migrations
                         name: "FK_Tags_Collections_CollectionId",
                         column: x => x.CollectionId,
                         principalTable: "Collections",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "CollectibleAttributes",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
-                    Metadata = table.Column<string>(type: "TEXT", nullable: false),
-                    CollectibleId = table.Column<Guid>(type: "TEXT", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_CollectibleAttributes", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_CollectibleAttributes_Collectibles_CollectibleId",
-                        column: x => x.CollectibleId,
-                        principalTable: "Collectibles",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -170,12 +151,6 @@ namespace CollectR.Persistence.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_CollectibleAttributes_CollectibleId",
-                table: "CollectibleAttributes",
-                column: "CollectibleId",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Collectibles_CategoryId",
                 table: "Collectibles",
                 column: "CategoryId");
@@ -204,9 +179,6 @@ namespace CollectR.Persistence.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "CollectibleAttributes");
-
             migrationBuilder.DropTable(
                 name: "CollectibleTag");
 

@@ -21,4 +21,8 @@
     <ProjectReference Include="..\CollectR.Persistence\CollectR.Persistence.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\images\" />
+  </ItemGroup>
+
 </Project>
