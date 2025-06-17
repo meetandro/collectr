@@ -1,13 +1,13 @@
-﻿using ClosedXML.Excel;
+﻿using System.Text;
+using System.Text.Json;
+using System.Xml.Serialization;
+using ClosedXML.Excel;
 using CollectR.Application.Contracts.Persistence;
+using CollectR.Application.Contracts.Services;
 using CollectR.Application.Features.Collections.Queries.ExportCollection;
 using CollectR.Domain;
-using System.Text.Json;
-using System.Text;
-using System.Xml.Serialization;
 using CollectR.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
-using CollectR.Application.Contracts.Services;
 
 namespace CollectR.Infrastructure.Services;
 
@@ -39,7 +39,8 @@ public sealed class ImportService(IApplicationDbContext context) : IImportServic
         {
             var collectionDto = JsonSerializer.Deserialize<CollectionDto>(
                 Encoding.UTF8.GetString(content),
-                new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
+            );
 
             await ImportCollection(collectionDto, cancellationToken);
             return true;
@@ -72,7 +73,7 @@ public sealed class ImportService(IApplicationDbContext context) : IImportServic
         var collection = new CollectionDto
         {
             Name = worksheet.Name,
-            Collectibles = new List<CollectibleDto>()
+            Collectibles = new List<CollectibleDto>(),
         };
 
         // Start from row 2 because row 1 is headers
@@ -137,7 +138,9 @@ public sealed class ImportService(IApplicationDbContext context) : IImportServic
                     if (openParen > 0 && closeParen > openParen)
                     {
                         var name = trimmed.Substring(0, openParen).Trim();
-                        var hex = trimmed.Substring(openParen + 1, closeParen - openParen - 1).Trim();
+                        var hex = trimmed
+                            .Substring(openParen + 1, closeParen - openParen - 1)
+                            .Trim();
                         tags.Add(new TagDto { Name = name, Hex = hex });
                     }
                 }
@@ -156,7 +159,7 @@ public sealed class ImportService(IApplicationDbContext context) : IImportServic
                 Condition = condition,
                 Metadata = metadata,
                 Category = category,
-                Tags = tags
+                Tags = tags,
             };
 
             collection.Collectibles.Add(collectible);
@@ -167,19 +170,24 @@ public sealed class ImportService(IApplicationDbContext context) : IImportServic
         return collection;
     }
 
-    private async Task ImportCollection(CollectionDto collectionDto, CancellationToken cancellationToken)
+    private async Task ImportCollection(
+        CollectionDto collectionDto,
+        CancellationToken cancellationToken
+    )
     {
         var collection = new Collection
         {
             Name = collectionDto.Name,
-            Description = collectionDto.Description
+            Description = collectionDto.Description,
         };
 
         foreach (var collectibleDto in collectionDto.Collectibles)
         {
             // Check if category exists
-            var category = await context.Categories
-                .FirstOrDefaultAsync(c => c.Name == collectibleDto.Category, cancellationToken);
+            var category = await context.Categories.FirstOrDefaultAsync(
+                c => c.Name == collectibleDto.Category,
+                cancellationToken
+            );
 
             if (category is null)
             {
@@ -202,25 +210,36 @@ public sealed class ImportService(IApplicationDbContext context) : IImportServic
                 Category = category,
                 Attributes = new Attributes { Metadata = collectibleDto.Metadata },
                 CategoryId = category.Id,
-                CollectionId = collection.Id
+                CollectionId = collection.Id,
             };
 
             // Handle tags
             foreach (var tagDto in collectibleDto.Tags)
             {
-                var tag = await context.Tags
-                    .FirstOrDefaultAsync(t => t.Name == tagDto.Name && t.Hex == tagDto.Hex, cancellationToken);
+                var tag = await context.Tags.FirstOrDefaultAsync(
+                    t => t.Name == tagDto.Name && t.Hex == tagDto.Hex,
+                    cancellationToken
+                );
 
                 if (tag is null)
                 {
-                    tag = new Tag { Name = tagDto.Name, Hex = tagDto.Hex, CollectionId = collection.Id };
+                    tag = new Tag
+                    {
+                        Name = tagDto.Name,
+                        Hex = tagDto.Hex,
+                        CollectionId = collection.Id,
+                    };
                     context.Tags.Add(tag);
                 }
 
-                collectible.CollectibleTags.Add(new CollectibleTag
-                {
-                    Tag = tag
-                });
+                collectible.CollectibleTags.Add(
+                    new CollectibleTag
+                    {
+                        Tag =
+                            tag // check if tag associations work
+                        ,
+                    }
+                );
             }
 
             collection.Collectibles.Add(collectible);

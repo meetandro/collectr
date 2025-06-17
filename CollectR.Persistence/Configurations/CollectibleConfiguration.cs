@@ -31,4 +31,3 @@ internal sealed class CollectibleConfiguration : IEntityTypeConfiguration<Collec
             .OnDelete(DeleteBehavior.Restrict);
     }
 }
-

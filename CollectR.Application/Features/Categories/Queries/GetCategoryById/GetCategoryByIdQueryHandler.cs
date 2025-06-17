@@ -15,8 +15,8 @@ internal sealed class GetCategoryByIdQueryHandler(IApplicationDbContext context,
         CancellationToken cancellationToken
     )
     {
-        var result = await context.Categories
-            .Where(c => c.Id == request.Id)
+        var result = await context
+            .Categories.Where(c => c.Id == request.Id)
             .AsNoTracking()
             .ProjectTo<GetCategoryByIdQueryResponse>(mapper.ConfigurationProvider)
             .FirstOrDefaultAsync(cancellationToken);

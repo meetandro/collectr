@@ -27,12 +27,12 @@ public static class DependencyInjection
         );
 
         services.AddDbContext<ApplicationDbContext>(
-            (sp, options) =>
+            (provider, options) =>
             {
                 var connectionString = configuration.GetConnectionString("ApplicationDbContext");
                 options
                     .UseSqlite(connectionString)
-                    .AddInterceptors(sp.GetRequiredService<AuditableEntityInterceptor>());
+                    .AddInterceptors(provider.GetRequiredService<AuditableEntityInterceptor>());
             }
         );
 

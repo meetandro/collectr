@@ -7,6 +7,5 @@ public sealed record Error(string Code, string? Description = null)
 
 public static class ErrorExtensions
 {
-    public static Result<T> ToFailure<T>(this Error error)
-        => Result.Failure<T>(error);
+    public static Result<T> ToFailure<T>(this Error error) => Result.Failure<T>(error);
 }

@@ -27,7 +27,7 @@ internal sealed class CreateCollectibleCommandHandler(
         {
             var images = new List<Image>();
 
-            foreach (var image in request.Images) // try to remove foreach
+            foreach (var image in request.Images)
             {
                 var savedFileName = await fileService.SaveFileInFolderAsync(image, "images");
                 var imageUri = $"/images/{savedFileName}";

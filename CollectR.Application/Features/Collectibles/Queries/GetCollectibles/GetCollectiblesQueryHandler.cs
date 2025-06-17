@@ -14,8 +14,8 @@ internal sealed class GetCollectiblesQueryHandler(IApplicationDbContext context,
         CancellationToken cancellationToken
     )
     {
-        var result = await context.Collectibles
-            .AsNoTracking()
+        var result = await context
+            .Collectibles.AsNoTracking()
             .ProjectTo<GetCollectiblesQueryResponse>(mapper.ConfigurationProvider)
             .AsSplitQuery()
             .ToListAsync(cancellationToken);

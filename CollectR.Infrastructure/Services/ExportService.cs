@@ -1,10 +1,10 @@
-﻿using CollectR.Application.Contracts.Services;
+﻿using System.Text;
 using System.Text.Json;
-using System.Text;
-using System.Xml.Serialization;
-using CollectR.Application.Features.Collections.Queries.ExportCollection;
-using ClosedXML.Excel;
 using System.Xml;
+using System.Xml.Serialization;
+using ClosedXML.Excel;
+using CollectR.Application.Contracts.Services;
+using CollectR.Application.Features.Collections.Queries.ExportCollection;
 
 namespace CollectR.Infrastructure.Services;
 
@@ -24,7 +24,10 @@ public class ExportService : IExportService
 
     public Task<byte[]> ExportAsJson(CollectionDto collection)
     {
-        var json = JsonSerializer.Serialize(collection, new JsonSerializerOptions { WriteIndented = true });
+        var json = JsonSerializer.Serialize(
+            collection,
+            new JsonSerializerOptions { WriteIndented = true }
+        );
         return Task.FromResult(Encoding.UTF8.GetBytes(json));
     }
 
@@ -33,12 +36,17 @@ public class ExportService : IExportService
         var serializer = new XmlSerializer(typeof(CollectionDto));
 
         using var ms = new MemoryStream();
-        using (var xmlWriter = XmlWriter.Create(ms, new XmlWriterSettings
-        {
-            Encoding = Encoding.UTF8,
-            Indent = true,
-            OmitXmlDeclaration = false
-        }))
+        using (
+            var xmlWriter = XmlWriter.Create(
+                ms,
+                new XmlWriterSettings
+                {
+                    Encoding = Encoding.UTF8,
+                    Indent = true,
+                    OmitXmlDeclaration = false,
+                }
+            )
+        )
         {
             serializer.Serialize(xmlWriter, collection);
         }

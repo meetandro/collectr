@@ -1,3 +1,4 @@
+using Asp.Versioning;
 using CollectR.Api.Endpoints;
 using CollectR.Api.Middleware;
 using CollectR.Api.Options;
@@ -19,6 +20,18 @@ builder.Services.AddHealthChecks();
 
 builder.Services.ConfigureOptions<ImageRootSetup>();
 
+builder.Services
+    .AddApiVersioning(options =>
+    {
+        options.DefaultApiVersion = new ApiVersion(1);
+        options.ApiVersionReader = new UrlSegmentApiVersionReader();
+    })
+    .AddApiExplorer(options =>
+    {
+        options.GroupNameFormat = "'v'V";
+        options.SubstituteApiVersionInUrl = true;
+    });
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -31,10 +44,18 @@ app.UseExceptionHandlingMiddleware();
 
 app.UseHttpsRedirection();
 
-app.MapCategoryEndpoints();
-app.MapCollectibleEndpoints();
-app.MapCollectionEndpoints();
-app.MapTagEndpoints();
+var apiVersionSet = app.NewApiVersionSet()
+    .HasApiVersion(new ApiVersion(1))
+    .ReportApiVersions()
+    .Build();
+var versionedGroup = app
+    .MapGroup("api/v{apiVersion:apiVersion}")
+    .WithApiVersionSet(apiVersionSet);
+
+versionedGroup.MapCategoryEndpoints();
+versionedGroup.MapCollectibleEndpoints();
+versionedGroup.MapCollectionEndpoints();
+versionedGroup.MapTagEndpoints();
 
 app.MapHealthChecks("/health");
 

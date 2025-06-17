@@ -10,7 +10,8 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     : DbContext(options),
         IApplicationDbContext
 {
-    public new DbSet<TEntity> Set<TEntity>() where TEntity : Entity => base.Set<TEntity>();
+    public new DbSet<TEntity> Set<TEntity>()
+        where TEntity : Entity => base.Set<TEntity>();
 
     public DbSet<Category> Categories { get; set; }
 

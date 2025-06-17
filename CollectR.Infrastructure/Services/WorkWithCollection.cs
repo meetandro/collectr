@@ -7,7 +7,9 @@ public static class WorkWithCollection
 {
     public static IXLWorksheet AddWorksheet(XLWorkbook workbook, CollectionDto collection)
     {
-        var worksheet = workbook.Worksheets.Add(collection.Name).SetTabColor(XLColor.CornflowerBlue);
+        var worksheet = workbook
+            .Worksheets.Add(collection.Name)
+            .SetTabColor(XLColor.CornflowerBlue);
 
         worksheet.Cell(1, 1).Value = "Title";
         worksheet.Cell(1, 2).Value = "Description";

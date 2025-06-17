@@ -4,7 +4,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CollectR.Persistence.Repositories;
 
-public class ImageRepository(IApplicationDbContext context) : Repository<Image>(context), IImageRepository
+public class ImageRepository(IApplicationDbContext context)
+    : Repository<Image>(context),
+        IImageRepository
 {
     private readonly IApplicationDbContext _context = context;
 

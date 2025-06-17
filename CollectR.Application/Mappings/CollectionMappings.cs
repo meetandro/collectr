@@ -7,21 +7,21 @@ using CollectR.Domain;
 
 namespace CollectR.Application.Mappings;
 
-public class CollectionMappings : Profile
+internal sealed class CollectionMappings : Profile
 {
     public CollectionMappings()
     {
-        CreateMap<CreateCollectionCommand, Collection>().ReverseMap();
+        CreateMap<CreateCollectionCommand, Collection>();
 
-        CreateMap<Collection, GetCollectionByIdQueryResponse>()
+        CreateMap<UpdateCollectionCommand, Collection>();
+
+        CreateMap<Collection, GetCollectionsQueryResponse>()
             .ForCtorParam(
-                nameof(GetCollectionByIdQueryResponse.CollectibleIds),
+                nameof(GetCollectionsQueryResponse.CollectibleIds),
                 opt => opt.MapFrom(src => src.Collectibles.Select(c => c.Id))
             );
 
-        CreateMap<UpdateCollectionCommand, Collection>().ReverseMap();
-
-        CreateMap<Collection, GetCollectionsQueryResponse>()
+        CreateMap<Collection, GetCollectionByIdQueryResponse>()
             .ForCtorParam(
                 nameof(GetCollectionByIdQueryResponse.CollectibleIds),
                 opt => opt.MapFrom(src => src.Collectibles.Select(c => c.Id))

@@ -2,7 +2,7 @@
 
 namespace CollectR.Application.Features.Collections.Queries.ExportCollection;
 
-public sealed class CollectionDto
+public sealed class CollectionDto // move this somewhere
 {
     public string Name { get; set; } = string.Empty;
     public string? Description { get; set; }

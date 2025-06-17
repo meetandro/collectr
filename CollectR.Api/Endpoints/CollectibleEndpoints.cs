@@ -11,9 +11,9 @@ namespace CollectR.Api.Endpoints;
 
 public static class CollectibleEndpoints
 {
-    public static void MapCollectibleEndpoints(this WebApplication app)
+    public static void MapCollectibleEndpoints(this IEndpointRouteBuilder app)
     {
-        var root = app.MapGroup("/api/collectibles");
+        var root = app.MapGroup("collectibles");
 
         root.MapGet("", GetAllCollectibles);
 
@@ -58,7 +58,10 @@ public static class CollectibleEndpoints
         return ApiResult.FromResult(result);
     }
 
-    public static async Task<IResult> UpdateCollectibleTags(UpdateCollectibleTagsCommand command, IMediator mediator)
+    public static async Task<IResult> UpdateCollectibleTags(
+        UpdateCollectibleTagsCommand command,
+        IMediator mediator
+    )
     {
         var result = await mediator.Send(command);
         return ApiResult.FromResult(result);

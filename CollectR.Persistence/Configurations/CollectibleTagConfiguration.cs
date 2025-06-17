@@ -8,6 +8,8 @@ internal sealed class CollectibleTagConfiguration : IEntityTypeConfiguration<Col
 {
     public void Configure(EntityTypeBuilder<CollectibleTag> builder)
     {
+        builder.HasQueryFilter(ct => !ct.Collectible.IsDeleted);
+
         builder.HasKey(ct => new { ct.CollectibleId, ct.TagId });
 
         builder

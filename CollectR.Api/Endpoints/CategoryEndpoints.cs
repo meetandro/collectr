@@ -1,19 +1,19 @@
-﻿using CollectR.Application.Features.Categories.Commands.CreateCategory;
+﻿using CollectR.Api.Infrastructure;
+using CollectR.Application.Features.Categories.Commands.CreateCategory;
 using CollectR.Application.Features.Categories.Commands.DeleteCategory;
 using CollectR.Application.Features.Categories.Commands.UpdateCategory;
 using CollectR.Application.Features.Categories.Queries.GetCategories;
 using CollectR.Application.Features.Categories.Queries.GetCategoryById;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using CollectR.Api.Infrastructure;
 
 namespace CollectR.Api.Endpoints;
 
 public static class CategoryEndpoints
 {
-    public static void MapCategoryEndpoints(this WebApplication app)
+    public static void MapCategoryEndpoints(this IEndpointRouteBuilder app)
     {
-        var root = app.MapGroup("/api/categories");
+        var root = app.MapGroup("categories");
 
         root.MapGet("", GetAllCategories);
 

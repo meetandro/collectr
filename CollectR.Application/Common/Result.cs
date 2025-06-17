@@ -30,7 +30,9 @@ public class Result<TValue>
     public TValue Value =>
         IsSuccess
             ? _value
-            : throw new InvalidOperationException("The value of a failure result cannot be accessed.");
+            : throw new InvalidOperationException(
+                "The value of a failure result cannot be accessed."
+            );
 
     public static Result<TValue> Success(TValue value) => new(value, true, Error.None);
 

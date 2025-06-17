@@ -6,8 +6,6 @@ public sealed class DeleteCategoryCommandValidator : AbstractValidator<DeleteCat
 {
     public DeleteCategoryCommandValidator()
     {
-        RuleFor(x => x.Id)
-            .NotEmpty().WithMessage("Id is required.");
+        RuleFor(x => x.Id).NotEmpty().WithMessage("Id is required.");
     }
 }
-

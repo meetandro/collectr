@@ -8,41 +8,17 @@ using CollectR.Domain;
 
 namespace CollectR.Application.Mappings;
 
-public class CollectibleMappings : Profile // sealed? internal? figure it out.
+internal sealed class CollectibleMappings : Profile
 {
     public CollectibleMappings()
     {
-        CreateMap<string, Attributes>()
-            .ConvertUsing(src => new Attributes { Metadata = src });
+        CreateMap<string, Attributes>().ConvertUsing(src => new Attributes { Metadata = src });
 
-        CreateMap<Attributes, string>()
-            .ConvertUsing(src => src.Metadata);
+        CreateMap<Attributes, string>().ConvertUsing(src => src.Metadata);
 
-        CreateMap<CreateCollectibleCommand, Collectible>() // metadata
+        CreateMap<CreateCollectibleCommand, Collectible>()
             .ForMember(c => c.Attributes, dest => dest.MapFrom(c => c.Metadata))
-            .ForMember(c => c.Images, opt => opt.Ignore()); // check extra reversemaps in other profiles
-
-        CreateMap<Collectible, GetCollectibleByIdQueryResponse>()
-            .ForCtorParam(
-                nameof(GetCollectibleByIdQueryResponse.TagIds),
-                opt => opt.MapFrom(src => src.CollectibleTags.Select(ct => ct.TagId))
-            )
-            .ForCtorParam(
-                nameof(GetCollectibleByIdQueryResponse.ImageUris),
-                opt => opt.MapFrom(src => src.Images.Select(i => i.Uri))
-            )
-            .ForCtorParam(nameof(GetCollectibleByIdQueryResponse.Metadata), dest => dest.MapFrom(c => c.Attributes));
-
-        CreateMap<Collectible, GetCollectiblesForCollectionQueryResponse>() // collection mapping in collectible mappings?
-            .ForCtorParam(
-                nameof(GetCollectiblesForCollectionQueryResponse.TagIds),
-                opt => opt.MapFrom(src => src.CollectibleTags.Select(ct => ct.TagId))
-            )
-            .ForCtorParam(
-                nameof(GetCollectiblesForCollectionQueryResponse.ImageUris),
-                opt => opt.MapFrom(src => src.Images.Select(i => i.Uri))
-            )
-            .ForCtorParam(nameof(GetCollectibleByIdQueryResponse.Metadata), dest => dest.MapFrom(c => c.Attributes));
+            .ForMember(c => c.Images, opt => opt.Ignore());
 
         CreateMap<UpdateCollectibleCommand, Collectible>()
             .ForAllMembers(opt => opt.Condition((src, dest, srcMember) => srcMember is not null));
@@ -56,6 +32,37 @@ public class CollectibleMappings : Profile // sealed? internal? figure it out.
                 nameof(GetCollectiblesQueryResponse.ImageUris),
                 opt => opt.MapFrom(src => src.Images.Select(i => i.Uri))
             )
-            .ForCtorParam(nameof(GetCollectibleByIdQueryResponse.Metadata), dest => dest.MapFrom(c => c.Attributes));
+            .ForCtorParam(
+                nameof(GetCollectiblesQueryResponse.Metadata),
+                dest => dest.MapFrom(c => c.Attributes)
+            );
+
+        CreateMap<Collectible, GetCollectiblesForCollectionQueryResponse>()
+            .ForCtorParam(
+                nameof(GetCollectiblesForCollectionQueryResponse.TagIds),
+                opt => opt.MapFrom(src => src.CollectibleTags.Select(ct => ct.TagId))
+            )
+            .ForCtorParam(
+                nameof(GetCollectiblesForCollectionQueryResponse.ImageUris),
+                opt => opt.MapFrom(src => src.Images.Select(i => i.Uri))
+            )
+            .ForCtorParam(
+                nameof(GetCollectiblesForCollectionQueryResponse.Metadata),
+                dest => dest.MapFrom(c => c.Attributes)
+            );
+
+        CreateMap<Collectible, GetCollectibleByIdQueryResponse>()
+            .ForCtorParam(
+                nameof(GetCollectibleByIdQueryResponse.TagIds),
+                opt => opt.MapFrom(src => src.CollectibleTags.Select(ct => ct.TagId))
+            )
+            .ForCtorParam(
+                nameof(GetCollectibleByIdQueryResponse.ImageUris),
+                opt => opt.MapFrom(src => src.Images.Select(i => i.Uri))
+            )
+            .ForCtorParam(
+                nameof(GetCollectibleByIdQueryResponse.Metadata),
+                dest => dest.MapFrom(c => c.Attributes)
+            );
     }
 }

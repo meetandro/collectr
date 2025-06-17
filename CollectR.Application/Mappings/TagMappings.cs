@@ -8,29 +8,29 @@ using CollectR.Domain;
 
 namespace CollectR.Application.Mappings;
 
-public class TagMappings : Profile
+internal sealed class TagMappings : Profile
 {
     public TagMappings()
     {
-        CreateMap<CreateTagCommand, Tag>().ReverseMap();
+        CreateMap<CreateTagCommand, Tag>();
 
-        CreateMap<Tag, GetTagByIdQueryResponse>()
+        CreateMap<UpdateTagCommand, Tag>();
+
+        CreateMap<Tag, GetTagsQueryResponse>()
             .ForCtorParam(
-                nameof(GetTagByIdQueryResponse.CollectibleIds),
+                nameof(GetTagsQueryResponse.CollectibleIds),
                 opt => opt.MapFrom(src => src.CollectibleTags.Select(ct => ct.CollectibleId))
             );
 
         CreateMap<Tag, GetTagsForCollectionQueryResponse>()
             .ForCtorParam(
-                nameof(GetTagByIdQueryResponse.CollectibleIds),
+                nameof(GetTagsForCollectionQueryResponse.CollectibleIds),
                 opt => opt.MapFrom(src => src.CollectibleTags.Select(ct => ct.CollectibleId))
             );
 
-        CreateMap<UpdateTagCommand, Tag>().ReverseMap();
-
-        CreateMap<Tag, GetTagsQueryResponse>()
+        CreateMap<Tag, GetTagByIdQueryResponse>()
             .ForCtorParam(
-                nameof(GetTagsQueryResponse.CollectibleIds),
+                nameof(GetTagByIdQueryResponse.CollectibleIds),
                 opt => opt.MapFrom(src => src.CollectibleTags.Select(ct => ct.CollectibleId))
             );
     }

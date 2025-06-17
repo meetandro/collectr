@@ -11,9 +11,9 @@ namespace CollectR.Api.Endpoints;
 
 public static class TagEndpoints
 {
-    public static void MapTagEndpoints(this WebApplication app)
+    public static void MapTagEndpoints(this IEndpointRouteBuilder app)
     {
-        var root = app.MapGroup("/api/tags");
+        var root = app.MapGroup("tags");
 
         root.MapGet("", GetAllTags);
 

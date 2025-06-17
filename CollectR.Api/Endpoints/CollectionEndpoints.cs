@@ -16,9 +16,9 @@ namespace CollectR.Api.Endpoints;
 
 public static class CollectionEndpoints
 {
-    public static void MapCollectionEndpoints(this WebApplication app)
+    public static void MapCollectionEndpoints(this IEndpointRouteBuilder app)
     {
-        var root = app.MapGroup("/api/collections");
+        var root = app.MapGroup("collections");
 
         root.MapGet("", GetAllCollections);
 
@@ -72,9 +72,18 @@ public static class CollectionEndpoints
         return ApiResult.FromResult(result);
     }
 
-    public static async Task<IResult> ImportCollection(IFormFile file, IFileService fileService, IMediator mediator)
+    public static async Task<IResult> ImportCollection(
+        IFormFile file,
+        IFileService fileService,
+        IMediator mediator
+    )
     {
-        var result = await mediator.Send(new ImportCollectionCommand(await fileService.ConvertToByteArrayAsync(file), file.FileName));
+        var result = await mediator.Send(
+            new ImportCollectionCommand(
+                await fileService.ConvertToByteArrayAsync(file),
+                file.FileName
+            )
+        );
         return ApiResult.FromResult(result);
     }
 

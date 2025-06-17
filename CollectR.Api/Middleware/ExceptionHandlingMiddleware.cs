@@ -40,7 +40,7 @@ public sealed class ExceptionHandlingMiddleware(
 
             default:
                 statusCode = HttpStatusCode.InternalServerError;
-                errorMessage = "An unexpected error occurred.";
+                errorMessage = "An error occurred.";
                 break;
         }
 

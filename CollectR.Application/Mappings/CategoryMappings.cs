@@ -7,25 +7,24 @@ using CollectR.Domain;
 
 namespace CollectR.Application.Mappings;
 
-public class CategoryMappings : Profile
+internal sealed class CategoryMappings : Profile
 {
     public CategoryMappings()
     {
-        CreateMap<CreateCategoryCommand, Category>().ReverseMap();
+        CreateMap<CreateCategoryCommand, Category>();
+
+        CreateMap<UpdateCategoryCommand, Category>();
+
+        CreateMap<Category, GetCategoriesQueryResponse>()
+            .ForCtorParam(
+                nameof(GetCategoriesQueryResponse.CollectibleIds),
+                opt => opt.MapFrom(src => src.Collectibles.Select(c => c.Id))
+            );
 
         CreateMap<Category, GetCategoryByIdQueryResponse>()
             .ForCtorParam(
                 nameof(GetCategoryByIdQueryResponse.CollectibleIds),
                 opt => opt.MapFrom(src => src.Collectibles.Select(c => c.Id))
             );
-
-        CreateMap<UpdateCategoryCommand, Category>().ReverseMap();
-
-        CreateMap<Category, GetCategoriesQueryResponse>()
-            .ForCtorParam(
-                nameof(GetCategoryByIdQueryResponse.CollectibleIds),
-                opt => opt.MapFrom(src => src.Collectibles.Select(c => c.Id))
-            )
-            .ReverseMap();
     }
 }

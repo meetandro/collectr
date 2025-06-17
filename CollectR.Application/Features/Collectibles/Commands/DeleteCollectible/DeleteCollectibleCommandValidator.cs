@@ -6,7 +6,6 @@ public sealed class DeleteCollectibleCommandValidator : AbstractValidator<Delete
 {
     public DeleteCollectibleCommandValidator()
     {
-        RuleFor(x => x.Id)
-            .NotEmpty().WithMessage("Id is required.");
+        RuleFor(x => x.Id).NotEmpty().WithMessage("Id is required.");
     }
 }

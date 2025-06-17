@@ -6,10 +6,7 @@ public static class ApiResult
 {
     public static IResult FromResult<T>(Result<T> result)
     {
-        return result.Match(
-            onSuccess: value => Results.Ok(value),
-            onFailure: MapErrorToResponse
-        );
+        return result.Match(onSuccess: value => Results.Ok(value), onFailure: MapErrorToResponse);
     }
 
     private static IResult MapErrorToResponse(Error error)
@@ -18,7 +15,7 @@ public static class ApiResult
         {
             "Entity.NotFound" => Results.NotFound(error.Description),
             "Entity.OneOrMoreDoesntExist" => Results.NotFound(error.Description),
-            _ => Results.Problem(error.Description ?? "An error occurred")
+            _ => Results.Problem(error.Description ?? "An error occurred"),
         };
     }
 }

@@ -7,7 +7,10 @@ namespace CollectR.Application.Features.Tags.Commands.DeleteTag;
 internal sealed class DeleteTagCommandHandler(ITagRepository tagRepository)
     : ICommandHandler<DeleteTagCommand, Result<Unit>>
 {
-    public async Task<Result<Unit>> Handle(DeleteTagCommand request, CancellationToken cancellationToken)
+    public async Task<Result<Unit>> Handle(
+        DeleteTagCommand request,
+        CancellationToken cancellationToken
+    )
     {
         var tag = await tagRepository.GetByIdAsync(request.Id);
 
