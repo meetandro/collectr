@@ -31,6 +31,7 @@ namespace CollectR.Persistence.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
+                        .HasMaxLength(100)
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime?>("UpdatedAt")
@@ -66,9 +67,11 @@ namespace CollectR.Persistence.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Currency")
+                        .HasMaxLength(100)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Description")
+                        .HasMaxLength(1000)
                         .HasColumnType("TEXT");
 
                     b.Property<bool>("IsCollected")
@@ -82,6 +85,7 @@ namespace CollectR.Persistence.Migrations
 
                     b.Property<string>("Title")
                         .IsRequired()
+                        .HasMaxLength(100)
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime?>("UpdatedAt")
@@ -124,6 +128,7 @@ namespace CollectR.Persistence.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Description")
+                        .HasMaxLength(500)
                         .HasColumnType("TEXT");
 
                     b.Property<bool>("IsDeleted")
@@ -131,6 +136,7 @@ namespace CollectR.Persistence.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
+                        .HasMaxLength(100)
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime?>("UpdatedAt")
@@ -194,6 +200,7 @@ namespace CollectR.Persistence.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
+                        .HasMaxLength(100)
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime?>("UpdatedAt")
@@ -277,7 +284,7 @@ namespace CollectR.Persistence.Migrations
             modelBuilder.Entity("CollectR.Domain.Tag", b =>
                 {
                     b.HasOne("CollectR.Domain.Collection", "Collection")
-                        .WithMany()
+                        .WithMany("Tags")
                         .HasForeignKey("CollectionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -300,6 +307,8 @@ namespace CollectR.Persistence.Migrations
             modelBuilder.Entity("CollectR.Domain.Collection", b =>
                 {
                     b.Navigation("Collectibles");
+
+                    b.Navigation("Tags");
                 });
 
             modelBuilder.Entity("CollectR.Domain.Tag", b =>

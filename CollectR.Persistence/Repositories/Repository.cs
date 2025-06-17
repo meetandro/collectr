@@ -45,7 +45,7 @@ public class Repository<TEntity> : IRepository<TEntity>
         TEntity? entity = await _dbSet.FindAsync(id);
         if (entity is not null)
         {
-            entity.IsDeleted = true;
+            _dbSet.Remove(entity);
             return true;
         }
         return false;

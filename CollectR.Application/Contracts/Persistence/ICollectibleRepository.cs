@@ -4,6 +4,8 @@ namespace CollectR.Application.Contracts.Persistence;
 
 public interface ICollectibleRepository : IRepository<Collectible>
 {
+    Task<Collectible?> GetWithDetailsAsync(Guid id);
+
     IQueryable<Collectible> GetFilteredQueryableForCollection(
         Guid collectionId,
         string? searchQuery = null,

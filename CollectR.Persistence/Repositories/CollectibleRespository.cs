@@ -1,6 +1,7 @@
 ﻿using CollectR.Application.Contracts.Persistence;
 using CollectR.Domain;
 using CollectR.Persistence.Extensions;
+using Microsoft.EntityFrameworkCore;
 
 namespace CollectR.Persistence.Repositories;
 
@@ -9,6 +10,14 @@ public sealed class CollectibleRespository(IApplicationDbContext context)
         ICollectibleRepository
 {
     private readonly IApplicationDbContext _context = context;
+
+    public async Task<Collectible?> GetWithDetailsAsync(Guid id)
+    {
+        return await _context
+            .Collectibles.Include(c => c.Images)
+            .Include(c => c.CollectibleTags)
+            .FirstOrDefaultAsync(c => c.Id == id);
+    }
 
     public IQueryable<Collectible> GetFilteredQueryableForCollection(
         Guid collectionId,

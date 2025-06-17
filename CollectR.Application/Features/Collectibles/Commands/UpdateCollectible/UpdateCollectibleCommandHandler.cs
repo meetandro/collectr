@@ -4,15 +4,13 @@ using CollectR.Application.Common;
 using CollectR.Application.Contracts.Persistence;
 using CollectR.Application.Contracts.Services;
 using CollectR.Domain;
-using Microsoft.EntityFrameworkCore;
 
 namespace CollectR.Application.Features.Collectibles.Commands.UpdateCollectible;
 
 internal sealed class UpdateCollectibleCommandHandler(
     ICollectibleRepository collectibleRepository,
-    IApplicationDbContext context,
-    IFileService fileService,
     IImageRepository imageRepository,
+    IFileService fileService,
     IMapper mapper
 ) : ICommandHandler<UpdateCollectibleCommand, Result<Unit>>
 {
@@ -21,11 +19,7 @@ internal sealed class UpdateCollectibleCommandHandler(
         CancellationToken cancellationToken
     )
     {
-        var collectible = await context
-            .Collectibles.Include(c => c.CollectibleTags)
-            .Include(c => c.Images)
-            .AsSplitQuery()
-            .FirstOrDefaultAsync(c => c.Id == request.Id, cancellationToken);
+        var collectible = await collectibleRepository.GetWithDetailsAsync(request.Id);
 
         if (collectible is null)
         {
@@ -34,32 +28,6 @@ internal sealed class UpdateCollectibleCommandHandler(
 
         mapper.Map(request, collectible);
 
-        await DeleteExistingImagesIfRequestDoesntContainThem(
-            fileService,
-            imageRepository,
-            request,
-            collectible
-        );
-
-        await CreateNewImagesIfRequestContainsThem(
-            fileService,
-            imageRepository,
-            request,
-            collectible
-        );
-
-        collectibleRepository.Update(collectible);
-
-        return Result.Success();
-    }
-
-    private static async Task DeleteExistingImagesIfRequestDoesntContainThem(
-        IFileService fileService,
-        IImageRepository imageRepository,
-        UpdateCollectibleCommand request,
-        Collectible? collectible
-    )
-    {
         string[] uris = request.ExistingImageUris.Split(',');
 
         if (
@@ -69,25 +37,15 @@ internal sealed class UpdateCollectibleCommandHandler(
             && uris.Length != 0
         )
         {
-            foreach (var file in collectible.Images)
+            foreach (var image in collectible.Images)
             {
-                if (!request.ExistingImageUris.Contains(file.Uri))
+                if (!request.ExistingImageUris.Contains(image.Uri))
                 {
-                    fileService.DeleteFileInFolder(file.Uri, "images");
-                    await imageRepository.HardDeleteAsync(file.Id);
+                    fileService.DeleteFileInFolder(image.Uri, "images");
+                    await imageRepository.DeleteAsync(image.Id);
                 }
             }
         }
-    }
-
-    private static async Task<List<Image>> CreateNewImagesIfRequestContainsThem(
-        IFileService fileService,
-        IImageRepository imageRepository,
-        UpdateCollectibleCommand request,
-        Collectible? collectible
-    )
-    {
-        var imageUrls = new List<Image>();
 
         if (request.NewImages is not null && request.NewImages.Any())
         {
@@ -96,12 +54,14 @@ internal sealed class UpdateCollectibleCommandHandler(
                 var savedFileName = await fileService.SaveFileInFolderAsync(file, "images");
                 var imageUrl = $"/images/{savedFileName}";
 
-                imageUrls.Add(new Image { Uri = imageUrl, CollectibleId = collectible.Id });
+                await imageRepository.CreateAsync(
+                    new Image { Uri = imageUrl, CollectibleId = collectible.Id }
+                );
             }
-
-            await imageRepository.CreateRangeAsync(imageUrls);
         }
 
-        return imageUrls;
+        collectibleRepository.Update(collectible);
+
+        return Result.Success();
     }
 }

@@ -2,6 +2,7 @@
 using CollectR.Application.Common;
 using CollectR.Application.Contracts.Persistence;
 using CollectR.Application.Contracts.Services;
+using CollectR.Application.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace CollectR.Application.Features.Collections.Queries.ExportCollection;
@@ -55,7 +56,7 @@ internal sealed class ExportCollectionQueryHandler(
             return EntityErrors.NotFound(request.Id);
         }
 
-        var res = request.Format.ToLower() switch
+        (byte[], string, string)? byteTypeNameTuple = request.Format.ToLower() switch
         {
             "json" => (
                 await exportService.ExportAsJson(collection),
@@ -72,13 +73,19 @@ internal sealed class ExportCollectionQueryHandler(
                 "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
                 $"Collection-{collection.Name}.xlsx"
             ),
-            _ => throw new InvalidOperationException(
-                "Unsupported format."
-            ) // return an error instead of these
-            ,
+            _ => null,
         };
 
-        var result = new ExportCollectionQueryResponse(res.Item1, res.Item2, res.Item3);
+        if (byteTypeNameTuple is null)
+        {
+            return FileErrors.UnsupportedFormat(request.Format);
+        }
+
+        var result = new ExportCollectionQueryResponse(
+            byteTypeNameTuple.Value.Item1,
+            byteTypeNameTuple.Value.Item2,
+            byteTypeNameTuple.Value.Item3
+        );
 
         return result;
     }

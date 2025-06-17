@@ -1,4 +1,4 @@
-﻿using CollectR.Application.Features.Collections.Queries.ExportCollection;
+﻿using CollectR.Application.Models;
 
 namespace CollectR.Application.Contracts.Services;
 

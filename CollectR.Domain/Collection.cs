@@ -9,4 +9,6 @@ public class Collection : Entity
     public string? Description { get; set; }
 
     public ICollection<Collectible> Collectibles { get; set; } = [];
+
+    public ICollection<Tag> Tags { get; set; } = [];
 }

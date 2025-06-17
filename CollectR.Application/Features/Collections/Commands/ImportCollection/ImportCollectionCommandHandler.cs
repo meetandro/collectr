@@ -14,16 +14,24 @@ internal sealed class ImportCollectionCommandHandler(IImportService importServic
     {
         var extension = Path.GetExtension(request.FileName)?.ToLowerInvariant();
 
-        bool result = extension switch
+        bool? result = extension switch
         {
             ".xlsx" => await importService.ImportFromExcel(request.Content, cancellationToken),
             ".json" => await importService.ImportFromJson(request.Content, cancellationToken),
             ".xml" => await importService.ImportFromXml(request.Content, cancellationToken),
-            _ => throw new InvalidOperationException(
-                $"Unsupported import file format: {extension}"
-            ),
+            _ => null,
         };
 
-        return result ? Result.Success() : EntityErrors.NotFound(Guid.NewGuid()); // fix this
+        if (result is null)
+        {
+            return FileErrors.UnsupportedFormat(extension ?? "Empty");
+        }
+
+        if (result == false)
+        {
+            return FileErrors.ImportingFailed();
+        }
+
+        return Result.Success();
     }
 }

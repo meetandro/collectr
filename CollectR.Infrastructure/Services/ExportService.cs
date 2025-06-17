@@ -4,7 +4,8 @@ using System.Xml;
 using System.Xml.Serialization;
 using ClosedXML.Excel;
 using CollectR.Application.Contracts.Services;
-using CollectR.Application.Features.Collections.Queries.ExportCollection;
+using CollectR.Application.Models;
+using CollectR.Infrastructure.Common;
 
 namespace CollectR.Infrastructure.Services;
 

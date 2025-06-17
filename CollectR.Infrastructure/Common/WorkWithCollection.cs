@@ -1,7 +1,7 @@
 ﻿using ClosedXML.Excel;
-using CollectR.Application.Features.Collections.Queries.ExportCollection;
+using CollectR.Application.Models;
 
-namespace CollectR.Infrastructure.Services;
+namespace CollectR.Infrastructure.Common;
 
 public static class WorkWithCollection
 {
@@ -11,22 +11,24 @@ public static class WorkWithCollection
             .Worksheets.Add(collection.Name)
             .SetTabColor(XLColor.CornflowerBlue);
 
-        worksheet.Cell(1, 1).Value = "Title";
-        worksheet.Cell(1, 2).Value = "Description";
-        worksheet.Cell(1, 3).Value = "Currency";
-        worksheet.Cell(1, 4).Value = "Value";
-        worksheet.Cell(1, 5).Value = "Acquired Date";
-        worksheet.Cell(1, 6).Value = "Is Collected";
-        worksheet.Cell(1, 7).Value = "Sort Index";
-        worksheet.Cell(1, 8).Value = "Color";
-        worksheet.Cell(1, 9).Value = "Condition";
-        worksheet.Cell(1, 10).Value = "Metadata";
-        worksheet.Cell(1, 11).Value = "Category";
-        worksheet.Cell(1, 12).Value = "Tags";
+        worksheet.Cell(1, 1).Value = collection?.Description ?? "Collection";
 
-        worksheet.Row(1).Style.Font.Bold = true;
+        worksheet.Cell(2, 1).Value = "Title";
+        worksheet.Cell(2, 2).Value = "Description";
+        worksheet.Cell(2, 3).Value = "Currency";
+        worksheet.Cell(2, 4).Value = "Value";
+        worksheet.Cell(2, 5).Value = "Acquired Date";
+        worksheet.Cell(2, 6).Value = "Is Collected";
+        worksheet.Cell(2, 7).Value = "Sort Index";
+        worksheet.Cell(2, 8).Value = "Color";
+        worksheet.Cell(2, 9).Value = "Condition";
+        worksheet.Cell(2, 10).Value = "Metadata";
+        worksheet.Cell(2, 11).Value = "Category";
+        worksheet.Cell(2, 12).Value = "Tags";
 
-        int row = 2;
+        worksheet.Row(2).Style.Font.Bold = true;
+
+        int row = 3;
 
         foreach (var collectible in collection.Collectibles)
         {
@@ -42,9 +44,10 @@ public static class WorkWithCollection
             worksheet.Cell(row, 10).Value = collectible.Metadata;
             worksheet.Cell(row, 11).Value = collectible.Category;
 
-            var tags = collectible.Tags.Any()
-                ? string.Join(", ", collectible.Tags.Select(t => $"{t.Name} ({t.Hex})"))
-                : "";
+            var tags =
+                collectible.Tags.Count > 0
+                    ? string.Join(", ", collectible.Tags.Select(t => $"{t.Name} ({t.Hex})"))
+                    : "";
 
             worksheet.Cell(row, 12).Value = tags;
 

@@ -6,10 +6,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CollectR.Application.Features.Collectibles.Commands.UpdateCollectibleTags;
 
-internal sealed class UpdateCollectibleTagsCommandHandler(
-    ICollectibleRepository collectibleRepository,
-    IApplicationDbContext context
-) : ICommandHandler<UpdateCollectibleTagsCommand, Result<Unit>>
+internal sealed class UpdateCollectibleTagsCommandHandler(IApplicationDbContext context)
+    : ICommandHandler<UpdateCollectibleTagsCommand, Result<Unit>>
 {
     public async Task<Result<Unit>> Handle(
         UpdateCollectibleTagsCommand request,
@@ -40,8 +38,6 @@ internal sealed class UpdateCollectibleTagsCommandHandler(
                 TagId = tag.Id,
             })
             .ToList();
-
-        collectibleRepository.Update(collectible);
 
         return Result.Success();
     }

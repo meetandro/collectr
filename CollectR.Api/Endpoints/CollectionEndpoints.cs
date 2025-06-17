@@ -1,4 +1,5 @@
 ﻿using CollectR.Api.Infrastructure;
+using CollectR.Application.Common;
 using CollectR.Application.Contracts.Services;
 using CollectR.Application.Features.Collections.Commands.CreateCollection;
 using CollectR.Application.Features.Collections.Commands.DeleteCollection;
@@ -69,7 +70,10 @@ public static class CollectionEndpoints
     public static async Task<IResult> ExportCollection(Guid id, string format, IMediator mediator)
     {
         var result = await mediator.Send(new ExportCollectionQuery(id, format));
-        return ApiResult.FromResult(result);
+        return result.Match(
+            onSuccess: value => Results.File(value.FileContents, value.ContentType, value.FileName),
+            onFailure: error => Results.BadRequest(result.Error)
+        );
     }
 
     public static async Task<IResult> ImportCollection(

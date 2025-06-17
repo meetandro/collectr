@@ -9,7 +9,6 @@ namespace CollectR.Application.Features.Collectibles.Commands.CreateCollectible;
 
 internal sealed class CreateCollectibleCommandHandler(
     ICollectibleRepository collectibleRepository,
-    IImageRepository imageRepository,
     IFileService fileService,
     IMapper mapper
 ) : ICommandHandler<CreateCollectibleCommand, Result<Guid>>
@@ -25,17 +24,13 @@ internal sealed class CreateCollectibleCommandHandler(
 
         if (request.Images is not null && request.Images.Any())
         {
-            var images = new List<Image>();
-
             foreach (var image in request.Images)
             {
                 var savedFileName = await fileService.SaveFileInFolderAsync(image, "images");
                 var imageUri = $"/images/{savedFileName}";
 
-                images.Add(new Image { Uri = imageUri, Collectible = collectible });
+                collectible.Images.Add(new Image { Uri = imageUri, Collectible = collectible });
             }
-
-            await imageRepository.CreateRangeAsync(images);
         }
 
         return result.Id;

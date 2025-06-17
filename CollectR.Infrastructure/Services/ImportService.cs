@@ -4,7 +4,7 @@ using System.Xml.Serialization;
 using ClosedXML.Excel;
 using CollectR.Application.Contracts.Persistence;
 using CollectR.Application.Contracts.Services;
-using CollectR.Application.Features.Collections.Queries.ExportCollection;
+using CollectR.Application.Models;
 using CollectR.Domain;
 using CollectR.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
@@ -73,46 +73,40 @@ public sealed class ImportService(IApplicationDbContext context) : IImportServic
         var collection = new CollectionDto
         {
             Name = worksheet.Name,
-            Collectibles = new List<CollectibleDto>(),
+            Description = worksheet.Cell(1, 1).GetString(),
+            Collectibles = [],
         };
 
-        // Start from row 2 because row 1 is headers
-        int row = 2;
+        int row = 3;
 
         while (!worksheet.Row(row).IsEmpty())
         {
             var title = worksheet.Cell(row, 1).GetString();
             if (string.IsNullOrWhiteSpace(title))
-                break; // stop if empty title (optional safety)
+                break;
 
             var description = worksheet.Cell(row, 2).GetString();
             var currency = worksheet.Cell(row, 3).GetString();
 
-            // Try to parse decimal value
             decimal? value = null;
             if (decimal.TryParse(worksheet.Cell(row, 4).GetString(), out var val))
                 value = val;
 
-            // Try to parse date
             DateTime? acquiredDate = null;
             if (DateTime.TryParse(worksheet.Cell(row, 5).GetString(), out var date))
                 acquiredDate = date;
 
-            // IsCollected - parse bool
             bool isCollected = false;
             bool.TryParse(worksheet.Cell(row, 6).GetString(), out isCollected);
 
-            // SortIndex - int
             int sortIndex = 0;
             int.TryParse(worksheet.Cell(row, 7).GetString(), out sortIndex);
 
-            // Color - nullable enum (assumes Color.ToString() was stored)
             Color? color = null;
             var colorStr = worksheet.Cell(row, 8).GetString();
             if (Enum.TryParse<Color>(colorStr, out var col))
                 color = col;
 
-            // Condition - nullable enum
             Condition? condition = null;
             var conditionStr = worksheet.Cell(row, 9).GetString();
             if (Enum.TryParse<Condition>(conditionStr, out var cond))
@@ -122,7 +116,6 @@ public sealed class ImportService(IApplicationDbContext context) : IImportServic
 
             var category = worksheet.Cell(row, 11).GetString();
 
-            // Tags are stored like: "tagName (hex), tagName2 (hex2)"
             var tagsStr = worksheet.Cell(row, 12).GetString();
             var tags = new List<TagDto>();
 
@@ -131,7 +124,6 @@ public sealed class ImportService(IApplicationDbContext context) : IImportServic
                 var tagParts = tagsStr.Split(',', StringSplitOptions.RemoveEmptyEntries);
                 foreach (var part in tagParts)
                 {
-                    // Trim and extract tag name and hex code using regex or manual parsing
                     var trimmed = part.Trim();
                     int openParen = trimmed.LastIndexOf('(');
                     int closeParen = trimmed.LastIndexOf(')');
@@ -183,7 +175,6 @@ public sealed class ImportService(IApplicationDbContext context) : IImportServic
 
         foreach (var collectibleDto in collectionDto.Collectibles)
         {
-            // Check if category exists
             var category = await context.Categories.FirstOrDefaultAsync(
                 c => c.Name == collectibleDto.Category,
                 cancellationToken
@@ -193,7 +184,6 @@ public sealed class ImportService(IApplicationDbContext context) : IImportServic
             {
                 category = new Category { Name = collectibleDto.Category };
                 context.Categories.Add(category);
-                // No need to SaveChanges yet — EF Core will resolve this during SaveChangesAsync later
             }
 
             var collectible = new Collectible
@@ -213,7 +203,6 @@ public sealed class ImportService(IApplicationDbContext context) : IImportServic
                 CollectionId = collection.Id,
             };
 
-            // Handle tags
             foreach (var tagDto in collectibleDto.Tags)
             {
                 var tag = await context.Tags.FirstOrDefaultAsync(
@@ -232,14 +221,7 @@ public sealed class ImportService(IApplicationDbContext context) : IImportServic
                     context.Tags.Add(tag);
                 }
 
-                collectible.CollectibleTags.Add(
-                    new CollectibleTag
-                    {
-                        Tag =
-                            tag // check if tag associations work
-                        ,
-                    }
-                );
+                collectible.CollectibleTags.Add(new CollectibleTag { Tag = tag });
             }
 
             collection.Collectibles.Add(collectible);

@@ -31,6 +31,7 @@ public sealed class AuditableEntityInterceptor : SaveChangesInterceptor
                     entry.Entity.UpdatedAt = DateTime.UtcNow;
                     break;
                 case EntityState.Deleted:
+                    entry.State = EntityState.Modified;
                     entry.Entity.IsDeleted = true;
                     break;
             }

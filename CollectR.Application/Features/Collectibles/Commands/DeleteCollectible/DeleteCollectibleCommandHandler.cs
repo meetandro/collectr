@@ -15,7 +15,7 @@ internal sealed class DeleteCollectibleCommandHandler(
         CancellationToken cancellationToken
     )
     {
-        var collectible = await collectibleRepository.GetByIdAsync(request.Id);
+        var collectible = await collectibleRepository.GetWithDetailsAsync(request.Id);
 
         if (collectible is null)
         {

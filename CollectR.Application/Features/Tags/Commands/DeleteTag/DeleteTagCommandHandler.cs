@@ -12,7 +12,7 @@ internal sealed class DeleteTagCommandHandler(ITagRepository tagRepository)
         CancellationToken cancellationToken
     )
     {
-        var tag = await tagRepository.GetByIdAsync(request.Id);
+        var tag = await tagRepository.GetWithDetailsAsync(request.Id);
 
         if (tag is null)
         {
