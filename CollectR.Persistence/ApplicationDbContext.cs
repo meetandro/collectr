@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CollectR.Persistence;
 
-public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+public sealed class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
     : DbContext(options),
         IApplicationDbContext
 {

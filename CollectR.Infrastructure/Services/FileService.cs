@@ -5,7 +5,7 @@ using Microsoft.Extensions.Options;
 
 namespace CollectR.Infrastructure.Services;
 
-public class FileService(IOptions<ImageRoot> root) : IFileService
+public sealed class FileService(IOptions<ImageRoot> root) : IFileService
 {
     public async Task<byte[]> ConvertToByteArrayAsync(IFormFile file)
     {

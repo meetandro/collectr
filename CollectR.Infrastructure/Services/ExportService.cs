@@ -8,7 +8,7 @@ using CollectR.Application.Features.Collections.Queries.ExportCollection;
 
 namespace CollectR.Infrastructure.Services;
 
-public class ExportService : IExportService
+public sealed class ExportService : IExportService
 {
     public Task<byte[]> ExportAsExcel(CollectionDto collection)
     {

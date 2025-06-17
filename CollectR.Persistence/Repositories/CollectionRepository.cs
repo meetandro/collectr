@@ -3,6 +3,6 @@ using CollectR.Domain;
 
 namespace CollectR.Persistence.Repositories;
 
-public class CollectionRepository(IApplicationDbContext context)
+public sealed class CollectionRepository(IApplicationDbContext context)
     : Repository<Collection>(context),
         ICollectionRepository;

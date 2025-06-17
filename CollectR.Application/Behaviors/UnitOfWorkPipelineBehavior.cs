@@ -6,7 +6,7 @@ namespace CollectR.Application.Behaviors;
 
 internal sealed class UnitOfWorkPipelineBehavior<TRequest, TResponse>(IApplicationDbContext context)
     : IPipelineBehavior<TRequest, TResponse>
-    where TRequest : notnull
+    where TRequest : class
 {
     private readonly IApplicationDbContext _context = context;
 

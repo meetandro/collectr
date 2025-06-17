@@ -3,6 +3,7 @@
 namespace CollectR.Application.Features.Collections.Queries.GetCollectiblesForCollection;
 
 public sealed record GetCollectiblesForCollectionQueryResponse(
+    Guid Id,
     string Title,
     string? Description,
     string? Currency,

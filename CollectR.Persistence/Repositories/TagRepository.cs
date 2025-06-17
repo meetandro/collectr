@@ -3,6 +3,6 @@ using CollectR.Domain;
 
 namespace CollectR.Persistence.Repositories;
 
-public class TagRepository(IApplicationDbContext context)
+public sealed class TagRepository(IApplicationDbContext context)
     : Repository<Tag>(context),
         ITagRepository;
