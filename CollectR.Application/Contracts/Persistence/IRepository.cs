@@ -5,8 +5,6 @@ public interface IRepository<TEntity>
 {
     Task<TEntity?> GetByIdAsync(Guid id);
 
-    Task<IEnumerable<TEntity>> GetByIdsAsync(IEnumerable<Guid> ids);
-
     Task<TEntity> CreateAsync(TEntity entity);
 
     Task<IEnumerable<TEntity>> CreateRangeAsync(IEnumerable<TEntity> entities);

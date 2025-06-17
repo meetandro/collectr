@@ -16,7 +16,7 @@ public class Repository<TEntity> : IRepository<TEntity>
         _dbSet = _context.Set<TEntity>();
     }
 
-    public async Task<TEntity?> GetByIdAsync(Guid id) // returning null a good idea? getbyids also does a reverse check
+    public async Task<TEntity?> GetByIdAsync(Guid id)
     {
         TEntity? entity = await _dbSet.FindAsync(id);
         return entity;
@@ -36,7 +36,6 @@ public class Repository<TEntity> : IRepository<TEntity>
 
     public TEntity Update(TEntity entity)
     {
-        entity.UpdatedAt = DateTime.UtcNow;
         _dbSet.Update(entity);
         return entity;
     }
@@ -50,11 +49,5 @@ public class Repository<TEntity> : IRepository<TEntity>
             return true;
         }
         return false;
-    }
-
-    public async Task<IEnumerable<TEntity>> GetByIdsAsync(IEnumerable<Guid> ids)
-    {
-        var entities = await _dbSet.Where(x => ids.Contains(x.Id)).ToListAsync();
-        return entities;
     }
 }

@@ -1,5 +1,6 @@
 using CollectR.Api.Endpoints;
 using CollectR.Api.Middleware;
+using CollectR.Api.Options;
 using CollectR.Application;
 using CollectR.Infrastructure;
 using CollectR.Persistence;
@@ -11,14 +12,12 @@ builder.Services.AddSwaggerGen();
 
 builder.Services
     .AddApplication()
-    .AddInfrastructure(webRootPath => // pass webhostenv https://github.com/jasontaylordev/NorthwindTraders/blob/master/Src/WebUI/Startup.cs
-    {
-        var env = webRootPath.GetRequiredService<IWebHostEnvironment>();
-        return env.WebRootPath;
-    })
+    .AddInfrastructure()
     .AddPersistence(builder.Configuration);
 
 builder.Services.AddHealthChecks();
+
+builder.Services.ConfigureOptions<ImageRootSetup>();
 
 var app = builder.Build();
 

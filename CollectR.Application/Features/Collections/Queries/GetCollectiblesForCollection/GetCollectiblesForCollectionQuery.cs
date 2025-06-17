@@ -7,7 +7,7 @@ public sealed record GetCollectiblesForCollectionQuery(
     Guid Id,
     int Page,
     int PageSize,
-    string? Query = null,
+    string? SearchQuery = null,
     string? Colors = null,
     string? Currency = null,
     decimal? MinValue = null,

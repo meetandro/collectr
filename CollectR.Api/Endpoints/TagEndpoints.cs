@@ -1,4 +1,4 @@
-﻿using CollectR.Api.Wrappers;
+﻿using CollectR.Api.Infrastructure;
 using CollectR.Application.Features.Tags.Commands.CreateTag;
 using CollectR.Application.Features.Tags.Commands.DeleteTag;
 using CollectR.Application.Features.Tags.Commands.UpdateTag;

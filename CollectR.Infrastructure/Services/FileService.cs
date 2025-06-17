@@ -1,9 +1,11 @@
 ﻿using CollectR.Application.Contracts.Services;
+using CollectR.Infrastructure.Common;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Options;
 
 namespace CollectR.Infrastructure.Services;
 
-public class FileService(string root) : IFileService // optimize root
+public class FileService(IOptions<ImageRoot> root) : IFileService
 {
     public async Task<byte[]> ConvertToByteArrayAsync(IFormFile file)
     {
@@ -31,7 +33,7 @@ public class FileService(string root) : IFileService // optimize root
 
     public void DeleteFileInFolder(string fileName, string folder)
     {
-        string fullPath = root + fileName;
+        string fullPath = root.Value.Path + fileName;
         if (File.Exists(fullPath))
         {
             File.Delete(fullPath);

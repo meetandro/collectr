@@ -1,8 +1,28 @@
 ﻿using CollectR.Application.Contracts.Persistence;
 using CollectR.Domain;
+using CollectR.Persistence.Extensions;
 
 namespace CollectR.Persistence.Repositories;
 
-public class CollectibleRespository(IApplicationDbContext context)
-    : Repository<Collectible>(context),
-        ICollectibleRepository;
+public class CollectibleRespository(IApplicationDbContext context) : Repository<Collectible>(context), ICollectibleRepository
+{
+    private readonly IApplicationDbContext _context = context;
+
+    public IQueryable<Collectible> GetFilteredQueryableForCollection(Guid collectionId, string? searchQuery = null, string? colors = null, string? currency = null, decimal? minValue = null, decimal? maxValue = null, string? conditions = null, string? categories = null, string? tags = null, DateTime? acquiredFrom = null, DateTime? acquiredTo = null, bool? isCollected = null, string? sortBy = null, string? sortOrder = null)
+    {
+        return _context.Collectibles
+            .Where(c => c.CollectionId == collectionId)
+            .WhereSearchQuery(searchQuery)
+            .WhereColors(colors)
+            .WhereCurrency(currency)
+            .WhereMinValue(minValue)
+            .WhereMaxValue(maxValue)
+            .WhereConditions(conditions)
+            .WhereCategories(categories)
+            .WhereTags(tags)
+            .WhereIsCollected(isCollected)
+            .WhereAcquiredFrom(acquiredFrom)
+            .WhereAcquiredTo(acquiredTo)
+            .OrderBySort(sortBy, sortOrder);
+    }
+}

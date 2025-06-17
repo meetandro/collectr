@@ -1,6 +1,6 @@
 ﻿using CollectR.Application.Common;
 
-namespace CollectR.Api.Wrappers;
+namespace CollectR.Api.Infrastructure;
 
 public static class ApiResult
 {

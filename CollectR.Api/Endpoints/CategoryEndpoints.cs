@@ -5,7 +5,7 @@ using CollectR.Application.Features.Categories.Queries.GetCategories;
 using CollectR.Application.Features.Categories.Queries.GetCategoryById;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using CollectR.Api.Wrappers;
+using CollectR.Api.Infrastructure;
 
 namespace CollectR.Api.Endpoints;
 

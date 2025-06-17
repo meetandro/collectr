@@ -1,4 +1,4 @@
-﻿using CollectR.Api.Wrappers;
+﻿using CollectR.Api.Infrastructure;
 using CollectR.Application.Features.Collectibles.Commands.CreateCollectible;
 using CollectR.Application.Features.Collectibles.Commands.DeleteCollectible;
 using CollectR.Application.Features.Collectibles.Commands.UpdateCollectible;
