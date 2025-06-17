@@ -12,8 +12,8 @@ public sealed class TagRepository(IApplicationDbContext context)
 
     public async Task<Tag?> GetWithDetailsAsync(Guid id)
     {
-        return await _context
-            .Tags.Include(t => t.CollectibleTags)
+        return await _context.Tags
+            .Include(t => t.CollectibleTags)
             .FirstOrDefaultAsync(t => t.Id == id);
     }
 }

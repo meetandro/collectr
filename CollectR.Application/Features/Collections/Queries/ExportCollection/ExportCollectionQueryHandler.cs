@@ -17,8 +17,8 @@ internal sealed class ExportCollectionQueryHandler(
         CancellationToken cancellationToken
     )
     {
-        var collection = await context
-            .Collections.Where(c => c.Id == request.Id)
+        var collection = await context.Collections
+            .Where(c => c.Id == request.Id)
             .AsNoTracking()
             .AsSplitQuery()
             .Select(c => new CollectionDto

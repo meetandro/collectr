@@ -18,15 +18,15 @@ internal sealed class CollectibleConfiguration : IEntityTypeConfiguration<Collec
 
         builder.Property(c => c.Value).HasColumnType("decimal(10, 2)");
 
-        builder.Property(i => i.Condition).HasConversion<int>();
+        builder.Property(c => c.Condition).HasConversion<int>();
 
-        builder.Property(i => i.Color).HasConversion<int>();
+        builder.Property(c => c.Color).HasConversion<int>();
 
         builder.OwnsOne(c => c.Attributes);
 
         builder
             .HasOne(c => c.Category)
-            .WithMany(cc => cc.Collectibles)
+            .WithMany(c => c.Collectibles)
             .HasForeignKey(c => c.CategoryId)
             .OnDelete(DeleteBehavior.Restrict);
     }

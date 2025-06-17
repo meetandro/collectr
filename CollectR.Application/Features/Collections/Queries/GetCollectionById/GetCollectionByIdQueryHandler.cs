@@ -15,8 +15,8 @@ internal sealed class GetCollectionByIdQueryHandler(IApplicationDbContext contex
         CancellationToken cancellationToken
     )
     {
-        var result = await context
-            .Collections.Where(c => c.Id == request.Id)
+        var result = await context.Collections
+            .Where(c => c.Id == request.Id)
             .AsNoTracking()
             .ProjectTo<GetCollectionByIdQueryResponse>(mapper.ConfigurationProvider)
             .FirstOrDefaultAsync(cancellationToken);

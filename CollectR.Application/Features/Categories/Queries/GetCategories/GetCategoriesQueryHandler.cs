@@ -14,8 +14,8 @@ internal sealed class GetCategoriesQueryHandler(IApplicationDbContext context, I
         CancellationToken cancellationToken
     )
     {
-        var result = await context
-            .Categories.AsNoTracking()
+        var result = await context.Categories
+            .AsNoTracking()
             .ProjectTo<GetCategoriesQueryResponse>(mapper.ConfigurationProvider)
             .ToListAsync(cancellationToken);
         return result;

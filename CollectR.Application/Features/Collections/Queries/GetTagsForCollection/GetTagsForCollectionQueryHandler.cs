@@ -16,8 +16,8 @@ internal sealed class GetTagsForCollectionQueryHandler(
         CancellationToken cancellationToken
     )
     {
-        var result = await context
-            .Tags.Where(t => t.CollectionId == request.Id)
+        var result = await context.Tags
+            .Where(t => t.CollectionId == request.Id)
             .Include(t => t.CollectibleTags)
             .AsNoTracking()
             .ProjectTo<GetTagsForCollectionQueryResponse>(mapper.ConfigurationProvider)

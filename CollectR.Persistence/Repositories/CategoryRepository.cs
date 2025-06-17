@@ -12,8 +12,8 @@ public sealed class CategoryRepository(IApplicationDbContext context)
 
     public async Task<Category?> GetWithDetailsAsync(Guid id)
     {
-        return await _context
-            .Categories.Include(c => c.Collectibles)
+        return await _context.Categories
+            .Include(c => c.Collectibles)
             .FirstOrDefaultAsync(c => c.Id == id);
     }
 }

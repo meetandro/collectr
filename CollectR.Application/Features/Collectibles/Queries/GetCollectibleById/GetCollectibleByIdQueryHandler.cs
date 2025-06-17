@@ -15,12 +15,13 @@ internal sealed class GetCollectibleByIdQueryHandler(IApplicationDbContext conte
         CancellationToken cancellationToken
     )
     {
-        var result = await context
-            .Collectibles.Where(c => c.Id == request.Id)
+        var result = await context.Collectibles
+            .Where(c => c.Id == request.Id)
             .AsNoTracking()
             .ProjectTo<GetCollectibleByIdQueryResponse>(mapper.ConfigurationProvider)
             .AsSplitQuery()
             .FirstOrDefaultAsync(cancellationToken);
+
         if (result is null)
         {
             return EntityErrors.NotFound(request.Id);

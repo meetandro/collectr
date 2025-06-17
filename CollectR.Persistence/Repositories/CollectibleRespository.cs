@@ -13,8 +13,8 @@ public sealed class CollectibleRespository(IApplicationDbContext context)
 
     public async Task<Collectible?> GetWithDetailsAsync(Guid id)
     {
-        return await _context
-            .Collectibles.Include(c => c.Images)
+        return await _context.Collectibles
+            .Include(c => c.Images)
             .Include(c => c.CollectibleTags)
             .FirstOrDefaultAsync(c => c.Id == id);
     }
@@ -36,8 +36,8 @@ public sealed class CollectibleRespository(IApplicationDbContext context)
         string? sortOrder = null
     )
     {
-        return _context
-            .Collectibles.Where(c => c.CollectionId == collectionId)
+        return _context.Collectibles
+            .Where(c => c.CollectionId == collectionId)
             .WhereSearchQuery(searchQuery)
             .WhereColors(colors)
             .WhereCurrency(currency)
