@@ -173,16 +173,16 @@ public sealed class ImportService(IApplicationDbContext context) : IImportServic
             Description = collectionDto.Description,
         };
 
+        var categories = await context.Categories.ToListAsync(cancellationToken);
+        var tags = await context.Tags.ToListAsync(cancellationToken);
+
         foreach (var collectibleDto in collectionDto.Collectibles)
         {
-            var category = await context.Categories.FirstOrDefaultAsync(
-                c => c.Name == collectibleDto.Category,
-                cancellationToken
-            );
-
-            if (category is null)
+            var category = categories.FirstOrDefault(c => c.Name == collectibleDto.Category);
+            if (category == null)
             {
                 category = new Category { Name = collectibleDto.Category };
+                categories.Add(category);
                 context.Categories.Add(category);
             }
 
@@ -205,12 +205,8 @@ public sealed class ImportService(IApplicationDbContext context) : IImportServic
 
             foreach (var tagDto in collectibleDto.Tags)
             {
-                var tag = await context.Tags.FirstOrDefaultAsync(
-                    t => t.Name == tagDto.Name && t.Hex == tagDto.Hex,
-                    cancellationToken
-                );
-
-                if (tag is null)
+                var tag = tags.FirstOrDefault(t => t.Name == tagDto.Name && t.Hex == tagDto.Hex);
+                if (tag == null)
                 {
                     tag = new Tag
                     {
@@ -218,6 +214,7 @@ public sealed class ImportService(IApplicationDbContext context) : IImportServic
                         Hex = tagDto.Hex,
                         CollectionId = collection.Id,
                     };
+                    tags.Add(tag);
                     context.Tags.Add(tag);
                 }
 
