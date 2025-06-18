@@ -8,5 +8,5 @@ public interface IFileService
 
     Task<string> SaveFileInFolderAsync(IFormFile file, string folder);
 
-    public void DeleteFileInFolder(string fileName, string folder);
+    public bool DeleteFileInFolder(string fileName, string folder);
 }

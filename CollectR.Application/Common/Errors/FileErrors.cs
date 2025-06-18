@@ -1,4 +1,4 @@
-﻿namespace CollectR.Application.Common;
+﻿namespace CollectR.Application.Common.Errors;
 
 public static class FileErrors
 {

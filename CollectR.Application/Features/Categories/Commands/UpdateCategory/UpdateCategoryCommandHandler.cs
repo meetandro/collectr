@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using CollectR.Application.Abstractions;
 using CollectR.Application.Common;
+using CollectR.Application.Common.Errors;
+using CollectR.Application.Common.Result;
 using CollectR.Application.Contracts.Persistence;
 
 namespace CollectR.Application.Features.Categories.Commands.UpdateCategory;

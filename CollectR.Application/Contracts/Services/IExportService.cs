@@ -1,4 +1,4 @@
-﻿using CollectR.Application.Models;
+﻿using CollectR.Application.Contracts.Models;
 
 namespace CollectR.Application.Contracts.Services;
 

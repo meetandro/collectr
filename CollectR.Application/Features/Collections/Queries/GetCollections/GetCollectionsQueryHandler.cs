@@ -18,6 +18,7 @@ internal sealed class GetCollectionsQueryHandler(IApplicationDbContext context, 
             .AsNoTracking()
             .ProjectTo<GetCollectionsQueryResponse>(mapper.ConfigurationProvider)
             .ToListAsync(cancellationToken);
+
         return result;
     }
 }

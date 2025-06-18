@@ -16,9 +16,10 @@ internal sealed class GetCollectiblesQueryHandler(IApplicationDbContext context,
     {
         var result = await context.Collectibles
             .AsNoTracking()
-            .ProjectTo<GetCollectiblesQueryResponse>(mapper.ConfigurationProvider)
             .AsSplitQuery()
+            .ProjectTo<GetCollectiblesQueryResponse>(mapper.ConfigurationProvider)
             .ToListAsync(cancellationToken);
+
         return result;
     }
 }

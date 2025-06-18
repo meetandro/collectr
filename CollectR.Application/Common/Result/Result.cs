@@ -1,4 +1,6 @@
-﻿namespace CollectR.Application.Common;
+﻿using CollectR.Application.Common.Errors;
+
+namespace CollectR.Application.Common.Result;
 
 public class Result<TValue>
 {

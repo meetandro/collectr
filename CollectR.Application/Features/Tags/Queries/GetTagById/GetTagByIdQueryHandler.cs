@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
-using CollectR.Application.Common;
+using CollectR.Application.Common.Errors;
+using CollectR.Application.Common.Result;
 using CollectR.Application.Contracts.Persistence;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -15,8 +16,8 @@ internal class GetTagByIdQueryHandler(IApplicationDbContext context, IMapper map
         CancellationToken cancellationToken
     )
     {
-        var result = await context
-            .Tags.Where(t => t.Id == request.Id)
+        var result = await context.Tags
+            .Where(t => t.Id == request.Id)
             .AsNoTracking()
             .ProjectTo<GetTagByIdQueryResponse>(mapper.ConfigurationProvider)
             .FirstOrDefaultAsync(cancellationToken);

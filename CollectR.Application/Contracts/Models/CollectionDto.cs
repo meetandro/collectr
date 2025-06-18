@@ -1,4 +1,4 @@
-﻿namespace CollectR.Application.Models;
+﻿namespace CollectR.Application.Contracts.Models;
 
 public sealed class CollectionDto
 {

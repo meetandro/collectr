@@ -1,4 +1,4 @@
-﻿namespace CollectR.Infrastructure.Common;
+﻿namespace CollectR.Infrastructure.Options;
 
 public class ImageRoot
 {

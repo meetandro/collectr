@@ -3,8 +3,8 @@ using System.Text.Json;
 using System.Xml;
 using System.Xml.Serialization;
 using ClosedXML.Excel;
+using CollectR.Application.Contracts.Models;
 using CollectR.Application.Contracts.Services;
-using CollectR.Application.Models;
 using CollectR.Infrastructure.Common;
 
 namespace CollectR.Infrastructure.Services;
@@ -18,6 +18,7 @@ public sealed class ExportService : IExportService
         WorkWithCollection.AddWorksheet(workbook, collection);
 
         using var stream = new MemoryStream();
+
         workbook.SaveAs(stream);
 
         return Task.FromResult(stream.ToArray());
@@ -29,6 +30,7 @@ public sealed class ExportService : IExportService
             collection,
             new JsonSerializerOptions { WriteIndented = true }
         );
+
         return Task.FromResult(Encoding.UTF8.GetBytes(json));
     }
 
@@ -37,6 +39,7 @@ public sealed class ExportService : IExportService
         var serializer = new XmlSerializer(typeof(CollectionDto));
 
         using var ms = new MemoryStream();
+
         using (
             var xmlWriter = XmlWriter.Create(
                 ms,

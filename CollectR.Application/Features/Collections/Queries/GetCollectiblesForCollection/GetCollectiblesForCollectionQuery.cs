@@ -1,5 +1,5 @@
 ﻿using CollectR.Application.Abstractions;
-using CollectR.Application.Models;
+using CollectR.Application.Common;
 
 namespace CollectR.Application.Features.Collections.Queries.GetCollectiblesForCollection;
 

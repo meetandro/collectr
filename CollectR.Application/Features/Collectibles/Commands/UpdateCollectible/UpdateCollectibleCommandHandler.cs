@@ -1,12 +1,14 @@
 ﻿using AutoMapper;
 using CollectR.Application.Abstractions;
 using CollectR.Application.Common;
+using CollectR.Application.Common.Errors;
+using CollectR.Application.Common.Result;
 using CollectR.Application.Contracts.Persistence;
 using CollectR.Application.Contracts.Services;
 using CollectR.Domain;
 
 namespace CollectR.Application.Features.Collectibles.Commands.UpdateCollectible;
-
+//TODO : Further testing requied, what if i only assign id? will i be able to break free from the image repo?
 internal sealed class UpdateCollectibleCommandHandler(
     ICollectibleRepository collectibleRepository,
     IImageRepository imageRepository,

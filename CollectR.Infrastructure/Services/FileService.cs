@@ -1,5 +1,5 @@
 ﻿using CollectR.Application.Contracts.Services;
-using CollectR.Infrastructure.Common;
+using CollectR.Infrastructure.Options;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 
@@ -31,12 +31,14 @@ public sealed class FileService(IOptions<ImageRoot> root) : IFileService
         return fileName;
     }
 
-    public void DeleteFileInFolder(string fileName, string folder)
+    public bool DeleteFileInFolder(string fileName, string folder)
     {
         string fullPath = root.Value.Path + fileName;
         if (File.Exists(fullPath))
         {
             File.Delete(fullPath);
+            return true;
         }
+        return false;
     }
 }

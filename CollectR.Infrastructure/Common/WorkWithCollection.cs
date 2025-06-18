@@ -1,9 +1,9 @@
 ﻿using ClosedXML.Excel;
-using CollectR.Application.Models;
+using CollectR.Application.Contracts.Models;
 
 namespace CollectR.Infrastructure.Common;
 
-public static class WorkWithCollection
+internal static class WorkWithCollection
 {
     public static IXLWorksheet AddWorksheet(XLWorkbook workbook, CollectionDto collection)
     {

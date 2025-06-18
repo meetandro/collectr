@@ -16,6 +16,12 @@ public class Repository<TEntity> : IRepository<TEntity>
         _dbSet = _context.Set<TEntity>();
     }
 
+    public async Task<IEnumerable<TEntity>> GetByIdsAsync(IEnumerable<Guid> ids)
+    {
+        var entities = await _dbSet.Where(x => ids.Contains(x.Id)).ToListAsync();
+        return entities;
+    }
+
     public async Task<TEntity?> GetByIdAsync(Guid id)
     {
         TEntity? entity = await _dbSet.FindAsync(id);
@@ -26,12 +32,6 @@ public class Repository<TEntity> : IRepository<TEntity>
     {
         await _dbSet.AddAsync(entity);
         return entity;
-    }
-
-    public async Task<IEnumerable<TEntity>> CreateRangeAsync(IEnumerable<TEntity> entities)
-    {
-        await _dbSet.AddRangeAsync(entities);
-        return entities;
     }
 
     public TEntity Update(TEntity entity)

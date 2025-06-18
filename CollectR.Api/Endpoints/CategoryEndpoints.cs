@@ -15,18 +15,18 @@ public static class CategoryEndpoints
     {
         var root = app.MapGroup("categories");
 
-        root.MapGet("", GetAllCategories);
+        root.MapGet("", GetCategories);
 
-        root.MapGet("/{id}", GetCategoryById);
+        root.MapGet("{id}", GetCategoryById);
 
         root.MapPost("", CreateCategory);
 
-        root.MapPut("/{id}", UpdateCategory);
+        root.MapPut("{id}", UpdateCategory);
 
-        root.MapDelete("/{id}", DeleteCategory);
+        root.MapDelete("{id}", DeleteCategory);
     }
 
-    public static async Task<IResult> GetAllCategories(IMediator mediator)
+    public static async Task<IResult> GetCategories(IMediator mediator)
     {
         var result = await mediator.Send(new GetCategoriesQuery());
         return Results.Ok(result);

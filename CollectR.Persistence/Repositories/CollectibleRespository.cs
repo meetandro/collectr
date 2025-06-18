@@ -16,6 +16,7 @@ public sealed class CollectibleRespository(IApplicationDbContext context)
         return await _context.Collectibles
             .Include(c => c.Images)
             .Include(c => c.CollectibleTags)
+            .AsSplitQuery()
             .FirstOrDefaultAsync(c => c.Id == id);
     }
 

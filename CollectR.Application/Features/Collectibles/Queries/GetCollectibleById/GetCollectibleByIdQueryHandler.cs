@@ -1,7 +1,8 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using CollectR.Application.Abstractions;
-using CollectR.Application.Common;
+using CollectR.Application.Common.Errors;
+using CollectR.Application.Common.Result;
 using CollectR.Application.Contracts.Persistence;
 using Microsoft.EntityFrameworkCore;
 
@@ -18,8 +19,8 @@ internal sealed class GetCollectibleByIdQueryHandler(IApplicationDbContext conte
         var result = await context.Collectibles
             .Where(c => c.Id == request.Id)
             .AsNoTracking()
-            .ProjectTo<GetCollectibleByIdQueryResponse>(mapper.ConfigurationProvider)
             .AsSplitQuery()
+            .ProjectTo<GetCollectibleByIdQueryResponse>(mapper.ConfigurationProvider)
             .FirstOrDefaultAsync(cancellationToken);
 
         if (result is null)

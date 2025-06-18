@@ -3,11 +3,11 @@
 public interface IRepository<TEntity>
     where TEntity : class
 {
+    Task<IEnumerable<TEntity>> GetByIdsAsync(IEnumerable<Guid> ids);
+
     Task<TEntity?> GetByIdAsync(Guid id);
 
     Task<TEntity> CreateAsync(TEntity entity);
-
-    Task<IEnumerable<TEntity>> CreateRangeAsync(IEnumerable<TEntity> entities);
 
     TEntity Update(TEntity entity);
 

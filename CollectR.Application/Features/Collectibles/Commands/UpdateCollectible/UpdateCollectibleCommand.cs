@@ -1,5 +1,6 @@
 ﻿using CollectR.Application.Abstractions;
 using CollectR.Application.Common;
+using CollectR.Application.Common.Result;
 using CollectR.Domain.Enums;
 using Microsoft.AspNetCore.Http;
 

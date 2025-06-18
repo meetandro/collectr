@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using CollectR.Application.Abstractions;
-using CollectR.Application.Common;
+using CollectR.Application.Common.Result;
 using CollectR.Application.Contracts.Persistence;
 using CollectR.Application.Contracts.Services;
 using CollectR.Domain;

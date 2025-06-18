@@ -1,8 +1,10 @@
 ﻿using CollectR.Application.Abstractions;
-using CollectR.Application.Common;
+using CollectR.Application.Common.Errors;
+using CollectR.Application.Common.Format;
+using CollectR.Application.Common.Result;
+using CollectR.Application.Contracts.Models;
 using CollectR.Application.Contracts.Persistence;
 using CollectR.Application.Contracts.Services;
-using CollectR.Application.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace CollectR.Application.Features.Collections.Queries.ExportCollection;
@@ -56,36 +58,34 @@ internal sealed class ExportCollectionQueryHandler(
             return EntityErrors.NotFound(request.Id);
         }
 
-        (byte[], string, string)? byteTypeNameTuple = request.Format.ToLower() switch
-        {
-            "json" => (
-                await exportService.ExportAsJson(collection),
-                "application/json",
-                $"Collection-{collection.Name}.json"
-            ),
-            "xml" => (
-                await exportService.ExportAsXml(collection),
-                "application/xml",
-                $"Collection-{collection.Name}.xml"
-            ),
-            "excel" => (
-                await exportService.ExportAsExcel(collection),
-                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                $"Collection-{collection.Name}.xlsx"
-            ),
-            _ => null,
-        };
+        var format = FormatHelper.GetFormatFromString(request.Format);
 
-        if (byteTypeNameTuple is null)
+        if (format == Format.Unknown)
         {
             return FileErrors.UnsupportedFormat(request.Format);
         }
 
-        var result = new ExportCollectionQueryResponse(
-            byteTypeNameTuple.Value.Item1,
-            byteTypeNameTuple.Value.Item2,
-            byteTypeNameTuple.Value.Item3
-        );
+        (byte[] fileContents, string contentType, string fileName) = format switch
+        {
+            Format.Excel => (
+                await exportService.ExportAsExcel(collection),
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                $"Collection-{collection.Name}.xlsx"
+            ),
+            Format.Json => (
+                await exportService.ExportAsJson(collection),
+                "application/json",
+                $"Collection-{collection.Name}.json"
+            ),
+            Format.Xml => (
+                await exportService.ExportAsXml(collection),
+                "application/xml",
+                $"Collection-{collection.Name}.xml"
+            ),
+            _ => throw new InvalidOperationException("Unexpected format"),
+        };
+
+        var result = new ExportCollectionQueryResponse(fileContents, contentType, fileName);
 
         return result;
     }

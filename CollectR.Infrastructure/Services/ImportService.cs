@@ -2,9 +2,9 @@
 using System.Text.Json;
 using System.Xml.Serialization;
 using ClosedXML.Excel;
+using CollectR.Application.Contracts.Models;
 using CollectR.Application.Contracts.Persistence;
 using CollectR.Application.Contracts.Services;
-using CollectR.Application.Models;
 using CollectR.Domain;
 using CollectR.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
@@ -18,13 +18,18 @@ public sealed class ImportService(IApplicationDbContext context) : IImportServic
         try
         {
             using var workbook = new XLWorkbook(new MemoryStream(content));
+
             var worksheet = workbook.Worksheets.FirstOrDefault();
 
-            if (worksheet == null)
+            if (worksheet is null)
+            {
                 return false;
+            }
 
             var collectionDto = ParseWorksheet(worksheet);
+
             await ImportCollection(collectionDto, cancellationToken);
+
             return true;
         }
         catch (Exception)
@@ -42,7 +47,13 @@ public sealed class ImportService(IApplicationDbContext context) : IImportServic
                 new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
             );
 
+            if (collectionDto is null)
+            {
+                return false;
+            }
+
             await ImportCollection(collectionDto, cancellationToken);
+
             return true;
         }
         catch (Exception)
@@ -56,10 +67,18 @@ public sealed class ImportService(IApplicationDbContext context) : IImportServic
         try
         {
             var serializer = new XmlSerializer(typeof(CollectionDto));
+
             using var ms = new MemoryStream(content);
 
             var collectionDto = (CollectionDto)serializer.Deserialize(ms);
+
+            if (collectionDto is null)
+            {
+                return false;
+            }
+
             await ImportCollection(collectionDto, cancellationToken);
+
             return true;
         }
         catch (Exception)
@@ -82,57 +101,73 @@ public sealed class ImportService(IApplicationDbContext context) : IImportServic
         while (!worksheet.Row(row).IsEmpty())
         {
             var title = worksheet.Cell(row, 1).GetString();
+
             if (string.IsNullOrWhiteSpace(title))
+            {
                 break;
+            }
 
             var description = worksheet.Cell(row, 2).GetString();
+
             var currency = worksheet.Cell(row, 3).GetString();
 
             decimal? value = null;
-            if (decimal.TryParse(worksheet.Cell(row, 4).GetString(), out var val))
-                value = val;
+            if (decimal.TryParse(worksheet.Cell(row, 4).GetString(), out var parsedValue))
+            {
+                value = parsedValue;
+            }
 
             DateTime? acquiredDate = null;
-            if (DateTime.TryParse(worksheet.Cell(row, 5).GetString(), out var date))
-                acquiredDate = date;
+            if (DateTime.TryParse(worksheet.Cell(row, 5).GetString(), out var parsedDate))
+            {
+                acquiredDate = parsedDate;
+            }
 
-            bool isCollected = false;
-            bool.TryParse(worksheet.Cell(row, 6).GetString(), out isCollected);
+            bool.TryParse(worksheet.Cell(row, 6).GetString(), out bool isCollected);
 
-            int sortIndex = 0;
-            int.TryParse(worksheet.Cell(row, 7).GetString(), out sortIndex);
+            int.TryParse(worksheet.Cell(row, 7).GetString(), out int sortIndex);
 
             Color? color = null;
-            var colorStr = worksheet.Cell(row, 8).GetString();
-            if (Enum.TryParse<Color>(colorStr, out var col))
-                color = col;
+            var colorString = worksheet.Cell(row, 8).GetString();
+            if (Enum.TryParse<Color>(colorString, out var parsedColor))
+            {
+                color = parsedColor;
+            }
 
             Condition? condition = null;
-            var conditionStr = worksheet.Cell(row, 9).GetString();
-            if (Enum.TryParse<Condition>(conditionStr, out var cond))
-                condition = cond;
+            var conditionString = worksheet.Cell(row, 9).GetString();
+            if (Enum.TryParse<Condition>(conditionString, out var parsedCondition))
+            {
+                condition = parsedCondition;
+            }
 
             var metadata = worksheet.Cell(row, 10).GetString();
 
             var category = worksheet.Cell(row, 11).GetString();
 
-            var tagsStr = worksheet.Cell(row, 12).GetString();
+            var tagsString = worksheet.Cell(row, 12).GetString();
+
             var tags = new List<TagDto>();
 
-            if (!string.IsNullOrWhiteSpace(tagsStr))
+            if (!string.IsNullOrWhiteSpace(tagsString))
             {
-                var tagParts = tagsStr.Split(',', StringSplitOptions.RemoveEmptyEntries);
+                var tagParts = tagsString.Split(',', StringSplitOptions.RemoveEmptyEntries);
+
                 foreach (var part in tagParts)
                 {
                     var trimmed = part.Trim();
-                    int openParen = trimmed.LastIndexOf('(');
-                    int closeParen = trimmed.LastIndexOf(')');
-                    if (openParen > 0 && closeParen > openParen)
+
+                    int openParenthesesIndex = trimmed.LastIndexOf('(');
+                    int closeParenthesesIndex = trimmed.LastIndexOf(')');
+
+                    if (openParenthesesIndex > 0 && closeParenthesesIndex > openParenthesesIndex)
                     {
-                        var name = trimmed.Substring(0, openParen).Trim();
+                        var name = trimmed[..openParenthesesIndex].Trim();
+
                         var hex = trimmed
-                            .Substring(openParen + 1, closeParen - openParen - 1)
+                            .Substring(openParenthesesIndex + 1, closeParenthesesIndex - openParenthesesIndex - 1)
                             .Trim();
+
                         tags.Add(new TagDto { Name = name, Hex = hex });
                     }
                 }
@@ -174,15 +209,19 @@ public sealed class ImportService(IApplicationDbContext context) : IImportServic
         };
 
         var categories = await context.Categories.ToListAsync(cancellationToken);
-        var tags = await context.Tags.ToListAsync(cancellationToken);
+
+        var tags = new List<Tag>();
 
         foreach (var collectibleDto in collectionDto.Collectibles)
         {
             var category = categories.FirstOrDefault(c => c.Name == collectibleDto.Category);
-            if (category == null)
+
+            if (category is null)
             {
                 category = new Category { Name = collectibleDto.Category };
+
                 categories.Add(category);
+
                 context.Categories.Add(category);
             }
 
@@ -206,7 +245,8 @@ public sealed class ImportService(IApplicationDbContext context) : IImportServic
             foreach (var tagDto in collectibleDto.Tags)
             {
                 var tag = tags.FirstOrDefault(t => t.Name == tagDto.Name && t.Hex == tagDto.Hex);
-                if (tag == null)
+
+                if (tag is null)
                 {
                     tag = new Tag
                     {
@@ -214,7 +254,9 @@ public sealed class ImportService(IApplicationDbContext context) : IImportServic
                         Hex = tagDto.Hex,
                         CollectionId = collection.Id,
                     };
+
                     tags.Add(tag);
+
                     context.Tags.Add(tag);
                 }
 
@@ -225,6 +267,7 @@ public sealed class ImportService(IApplicationDbContext context) : IImportServic
         }
 
         context.Collections.Add(collection);
+
         await context.SaveChangesAsync(cancellationToken);
     }
 }

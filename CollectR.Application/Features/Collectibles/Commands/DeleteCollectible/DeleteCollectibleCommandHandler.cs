@@ -1,5 +1,7 @@
 ﻿using CollectR.Application.Abstractions;
 using CollectR.Application.Common;
+using CollectR.Application.Common.Errors;
+using CollectR.Application.Common.Result;
 using CollectR.Application.Contracts.Persistence;
 using CollectR.Application.Contracts.Services;
 
@@ -22,11 +24,11 @@ internal sealed class DeleteCollectibleCommandHandler(
             return EntityErrors.NotFound(request.Id);
         }
 
-        var imageUris = collectible.Images.Select(i => i.Uri);
+        var images = collectible.Images;
 
-        foreach (var imageUri in imageUris)
+        foreach (var image in images)
         {
-            fileService.DeleteFileInFolder(imageUri, "images");
+            fileService.DeleteFileInFolder(image.Uri, "images");
         }
 
         await collectibleRepository.DeleteAsync(request.Id);

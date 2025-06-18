@@ -4,7 +4,7 @@ using CollectR.Application.Exceptions;
 
 namespace CollectR.Api.Middleware;
 
-public sealed class ExceptionHandlingMiddleware(
+internal sealed class ExceptionHandlingMiddleware(
     RequestDelegate next,
     ILogger<ExceptionHandlingMiddleware> logger,
     IHostEnvironment env
@@ -53,6 +53,7 @@ public sealed class ExceptionHandlingMiddleware(
         };
 
         var result = JsonSerializer.Serialize(errorResponse);
+
         context.Response.ContentType = "application/json";
         context.Response.StatusCode = (int)statusCode;
 

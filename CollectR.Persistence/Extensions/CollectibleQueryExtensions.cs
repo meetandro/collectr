@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CollectR.Persistence.Extensions;
 
-public static class CollectibleQueryExtensions
+internal static class CollectibleQueryExtensions
 {
     public static IQueryable<Collectible> WhereSearchQuery(
         this IQueryable<Collectible> query,
@@ -13,9 +13,12 @@ public static class CollectibleQueryExtensions
     )
     {
         if (string.IsNullOrWhiteSpace(searchQuery))
+        {
             return query;
+        }
 
         var like = $"%{searchQuery}%";
+
         return query.Where(c =>
             EF.Functions.Like(c.Title, like)
             || c.Description != null && EF.Functions.Like(c.Description, like)
@@ -28,7 +31,9 @@ public static class CollectibleQueryExtensions
     )
     {
         if (string.IsNullOrWhiteSpace(colors))
+        {
             return query;
+        }
 
         var colorList = colors
             .Split(',', StringSplitOptions.RemoveEmptyEntries)
@@ -39,7 +44,9 @@ public static class CollectibleQueryExtensions
             .ToList();
 
         if (colorList.Count == 0)
+        {
             return query;
+        }
 
         return query.Where(c => c.Color != null && colorList.Contains(c.Color.Value));
     }
@@ -50,9 +57,12 @@ public static class CollectibleQueryExtensions
     )
     {
         if (string.IsNullOrWhiteSpace(currency))
+        {
             return query;
+        }
 
         var like = $"%{currency}%";
+
         return query.Where(c => EF.Functions.Like(c.Currency, like));
     }
 
@@ -78,7 +88,9 @@ public static class CollectibleQueryExtensions
     )
     {
         if (string.IsNullOrWhiteSpace(conditions))
+        {
             return query;
+        }
 
         var conditionList = conditions
             .Split(',', StringSplitOptions.RemoveEmptyEntries)
@@ -91,7 +103,9 @@ public static class CollectibleQueryExtensions
             .ToList();
 
         if (conditionList.Count == 0)
+        {
             return query;
+        }
 
         return query.Where(c => c.Condition != null && conditionList.Contains(c.Condition.Value));
     }
@@ -102,7 +116,9 @@ public static class CollectibleQueryExtensions
     )
     {
         if (string.IsNullOrWhiteSpace(categoryIds))
+        {
             return query;
+        }
 
         var categories = categoryIds
             .Split(',', StringSplitOptions.RemoveEmptyEntries)
@@ -112,7 +128,9 @@ public static class CollectibleQueryExtensions
             .ToList();
 
         if (categories.Count == 0)
+        {
             return query;
+        }
 
         return query.Where(c => categories.Contains(c.CategoryId));
     }
@@ -123,7 +141,9 @@ public static class CollectibleQueryExtensions
     )
     {
         if (string.IsNullOrWhiteSpace(tagIds))
+        {
             return query;
+        }
 
         var tags = tagIds
             .Split(',', StringSplitOptions.RemoveEmptyEntries)
@@ -133,7 +153,9 @@ public static class CollectibleQueryExtensions
             .ToList();
 
         if (tags.Count == 0)
+        {
             return query;
+        }
 
         return query.Where(c => c.CollectibleTags.Any(ct => tags.Contains(ct.TagId)));
     }
@@ -185,7 +207,9 @@ public static class CollectibleQueryExtensions
         };
 
         if (keySelector is null)
+        {
             return query.OrderBy(c => c.SortIndex);
+        }
 
         return sortOrder?.ToLower() == "desc"
             ? query.OrderByDescending(keySelector).ThenBy(c => c.SortIndex)

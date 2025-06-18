@@ -15,18 +15,18 @@ public static class TagEndpoints
     {
         var root = app.MapGroup("tags");
 
-        root.MapGet("", GetAllTags);
+        root.MapGet("", GetTags);
 
-        root.MapGet("/{id}", GetTagById);
+        root.MapGet("{id}", GetTagById);
 
         root.MapPost("", CreateTag);
 
-        root.MapPut("/{id}", UpdateTag);
+        root.MapPut("{id}", UpdateTag);
 
-        root.MapDelete("/{id}", DeleteTag);
+        root.MapDelete("{id}", DeleteTag);
     }
 
-    public static async Task<IResult> GetAllTags(IMediator mediator)
+    public static async Task<IResult> GetTags(IMediator mediator)
     {
         var result = await mediator.Send(new GetTagsQuery());
         return Results.Ok(result);

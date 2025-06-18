@@ -1,5 +1,8 @@
 ﻿using CollectR.Application.Abstractions;
 using CollectR.Application.Common;
+using CollectR.Application.Common.Errors;
+using CollectR.Application.Common.Format;
+using CollectR.Application.Common.Result;
 using CollectR.Application.Contracts.Services;
 
 namespace CollectR.Application.Features.Collections.Commands.ImportCollection;
@@ -12,22 +15,24 @@ internal sealed class ImportCollectionCommandHandler(IImportService importServic
         CancellationToken cancellationToken
     )
     {
-        var extension = Path.GetExtension(request.FileName)?.ToLowerInvariant();
+        var extension = Path.GetExtension(request.FileName).ToLowerInvariant();
 
-        bool? result = extension switch
-        {
-            ".xlsx" => await importService.ImportFromExcel(request.Content, cancellationToken),
-            ".json" => await importService.ImportFromJson(request.Content, cancellationToken),
-            ".xml" => await importService.ImportFromXml(request.Content, cancellationToken),
-            _ => null,
-        };
+        var format = FormatHelper.GetFormatFromString(extension);
 
-        if (result is null)
+        if (format == Format.Unknown)
         {
-            return FileErrors.UnsupportedFormat(extension ?? "Empty");
+            return FileErrors.UnsupportedFormat(extension);
         }
 
-        if (result == false)
+        var result = format switch
+        {
+            Format.Excel => await importService.ImportFromExcel(request.Content, cancellationToken),
+            Format.Json => await importService.ImportFromJson(request.Content, cancellationToken),
+            Format.Xml => await importService.ImportFromXml(request.Content, cancellationToken),
+            _ => false
+        };
+
+        if (!result)
         {
             return FileErrors.ImportingFailed();
         }

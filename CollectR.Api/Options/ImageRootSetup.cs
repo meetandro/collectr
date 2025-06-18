@@ -1,4 +1,4 @@
-﻿using CollectR.Infrastructure.Common;
+﻿using CollectR.Infrastructure.Options;
 using Microsoft.Extensions.Options;
 
 namespace CollectR.Api.Options;

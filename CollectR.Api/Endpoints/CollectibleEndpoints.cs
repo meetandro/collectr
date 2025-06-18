@@ -15,20 +15,20 @@ public static class CollectibleEndpoints
     {
         var root = app.MapGroup("collectibles");
 
-        root.MapGet("", GetAllCollectibles);
+        root.MapGet("", GetCollectibles);
 
-        root.MapGet("/{id}", GetCollectibleById);
+        root.MapGet("{id}", GetCollectibleById);
 
         root.MapPost("", CreateCollectible).DisableAntiforgery();
 
-        root.MapPut("/{id}", UpdateCollectible).DisableAntiforgery();
+        root.MapPut("{id}", UpdateCollectible).DisableAntiforgery();
 
-        root.MapPut("/{id}/tags", UpdateCollectibleTags);
+        root.MapPut("{id}/tags", UpdateCollectibleTags);
 
-        root.MapDelete("/{id}", DeleteCollectible);
+        root.MapDelete("{id}", DeleteCollectible);
     }
 
-    public static async Task<IResult> GetAllCollectibles(IMediator mediator)
+    public static async Task<IResult> GetCollectibles(IMediator mediator)
     {
         var result = await mediator.Send(new GetCollectiblesQuery());
         return Results.Ok(result);

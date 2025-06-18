@@ -1,5 +1,4 @@
 ﻿using CollectR.Api.Infrastructure;
-using CollectR.Application.Common;
 using CollectR.Application.Contracts.Services;
 using CollectR.Application.Features.Collections.Commands.CreateCollection;
 using CollectR.Application.Features.Collections.Commands.DeleteCollection;
@@ -21,26 +20,26 @@ public static class CollectionEndpoints
     {
         var root = app.MapGroup("collections");
 
-        root.MapGet("", GetAllCollections);
+        root.MapGet("", GetCollections);
 
-        root.MapGet("/{id}", GetCollectionById);
+        root.MapGet("{id}", GetCollectionById);
 
-        root.MapGet("/{id}/collectibles", GetCollectiblesForCollection);
+        root.MapGet("{id}/collectibles", GetCollectiblesForCollection);
 
-        root.MapGet("/{id}/tags", GetTagsForCollection);
+        root.MapGet("{id}/tags", GetTagsForCollection);
 
-        root.MapGet("/{id}/export", ExportCollection);
+        root.MapGet("{id}/export", ExportCollection);
 
-        root.MapPost("/import", ImportCollection).DisableAntiforgery();
+        root.MapPost("import", ImportCollection).DisableAntiforgery();
 
         root.MapPost("", CreateCollection);
 
-        root.MapPut("/{id}", UpdateCollection);
+        root.MapPut("{id}", UpdateCollection);
 
-        root.MapDelete("/{id}", DeleteCollection);
+        root.MapDelete("{id}", DeleteCollection);
     }
 
-    public static async Task<IResult> GetAllCollections(IMediator mediator)
+    public static async Task<IResult> GetCollections(IMediator mediator)
     {
         var result = await mediator.Send(new GetCollectionsQuery());
         return Results.Ok(result);
@@ -70,10 +69,7 @@ public static class CollectionEndpoints
     public static async Task<IResult> ExportCollection(Guid id, string format, IMediator mediator)
     {
         var result = await mediator.Send(new ExportCollectionQuery(id, format));
-        return result.Match(
-            onSuccess: value => Results.File(value.FileContents, value.ContentType, value.FileName),
-            onFailure: error => Results.BadRequest(result.Error)
-        );
+        return ApiResult.FromResult(result, value => Results.File(value.FileContents, value.ContentType, value.FileName));
     }
 
     public static async Task<IResult> ImportCollection(

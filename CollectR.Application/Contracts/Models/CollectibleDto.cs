@@ -1,6 +1,6 @@
 ﻿using CollectR.Domain.Enums;
 
-namespace CollectR.Application.Models;
+namespace CollectR.Application.Contracts.Models;
 
 public sealed class CollectibleDto
 {

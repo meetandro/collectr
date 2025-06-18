@@ -14,10 +14,11 @@ internal sealed class GetTagsQueryHandler(IApplicationDbContext context, IMapper
         CancellationToken cancellationToken
     )
     {
-        var result = await context
-            .Tags.AsNoTracking()
+        var result = await context.Tags
+            .AsNoTracking()
             .ProjectTo<GetTagsQueryResponse>(mapper.ConfigurationProvider)
             .ToListAsync(cancellationToken);
+
         return result;
     }
 }
