@@ -18,4 +18,4 @@ Collection tracking system with extended functionality, including but not limite
 
 ### Database Schema
 
-![DBSchema](https://github.com/user-attachments/assets/61e652bc-c3c5-4305-882d-59a642b39e90)
+![DBSchema](https://github.com/user-attachments/assets/75d6b6b8-0918-4c6f-813e-3f85ee813d0d)
