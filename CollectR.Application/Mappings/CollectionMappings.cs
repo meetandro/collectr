@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using CollectR.Application.Contracts.Models;
 using CollectR.Application.Features.Collections.Commands.CreateCollection;
 using CollectR.Application.Features.Collections.Commands.UpdateCollection;
 using CollectR.Application.Features.Collections.Queries.GetCollectionById;
@@ -11,6 +12,8 @@ internal sealed class CollectionMappings : Profile
 {
     public CollectionMappings()
     {
+        CreateMap<Collection, CollectionDto>();
+
         CreateMap<CreateCollectionCommand, Collection>();
 
         CreateMap<UpdateCollectionCommand, Collection>();

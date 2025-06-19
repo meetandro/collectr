@@ -1,5 +1,6 @@
 using Asp.Versioning;
 using CollectR.Api.Endpoints;
+using CollectR.Api.Extensions;
 using CollectR.Api.Middleware;
 using CollectR.Api.Options;
 using CollectR.Application;
@@ -39,6 +40,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.EnsureDatabaseCreated();
 
 app.UseExceptionHandlingMiddleware();
 

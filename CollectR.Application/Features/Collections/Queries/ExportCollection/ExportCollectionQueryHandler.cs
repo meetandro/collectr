@@ -1,4 +1,6 @@
-﻿using CollectR.Application.Abstractions;
+﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
+using CollectR.Application.Abstractions;
 using CollectR.Application.Common.Errors;
 using CollectR.Application.Common.Format;
 using CollectR.Application.Common.Result;
@@ -11,7 +13,8 @@ namespace CollectR.Application.Features.Collections.Queries.ExportCollection;
 
 internal sealed class ExportCollectionQueryHandler(
     IExportService exportService,
-    IApplicationDbContext context
+    IApplicationDbContext context,
+    IMapper mapper
 ) : IQueryHandler<ExportCollectionQuery, Result<ExportCollectionQueryResponse>>
 {
     public async Task<Result<ExportCollectionQueryResponse>> Handle(
@@ -23,34 +26,7 @@ internal sealed class ExportCollectionQueryHandler(
             .Where(c => c.Id == request.Id)
             .AsNoTracking()
             .AsSplitQuery()
-            .Select(c => new CollectionDto
-            {
-                Name = c.Name,
-                Description = c.Description,
-                Collectibles = c
-                    .Collectibles.Select(col => new CollectibleDto
-                    {
-                        Title = col.Title,
-                        Description = col.Description,
-                        Currency = col.Currency,
-                        Value = col.Value,
-                        AcquiredDate = col.AcquiredDate,
-                        IsCollected = col.IsCollected,
-                        SortIndex = col.SortIndex,
-                        Color = col.Color,
-                        Condition = col.Condition,
-                        Metadata = col.Attributes != null ? col.Attributes.Metadata : "{}",
-                        Category = col.Category != null ? col.Category.Name : string.Empty,
-                        Tags = col
-                            .CollectibleTags.Select(ct => new TagDto
-                            {
-                                Name = ct.Tag.Name,
-                                Hex = ct.Tag.Hex,
-                            })
-                            .ToList(),
-                    })
-                    .ToList(),
-            })
+            .ProjectTo<CollectionDto>(mapper.ConfigurationProvider)
             .FirstOrDefaultAsync(cancellationToken);
 
         if (collection is null)

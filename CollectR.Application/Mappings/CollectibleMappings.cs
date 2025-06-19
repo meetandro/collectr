@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using CollectR.Application.Contracts.Models;
 using CollectR.Application.Features.Collectibles.Commands.CreateCollectible;
 using CollectR.Application.Features.Collectibles.Commands.UpdateCollectible;
 using CollectR.Application.Features.Collectibles.Queries.GetCollectibleById;
@@ -12,6 +13,14 @@ internal sealed class CollectibleMappings : Profile
 {
     public CollectibleMappings()
     {
+        CreateMap<Collectible, CollectibleDto>()
+            .ForMember(dest => dest.Metadata, opt =>
+                opt.MapFrom(src => src.Attributes != null ? src.Attributes.Metadata : "{}"))
+            .ForMember(dest => dest.Category, opt =>
+                opt.MapFrom(src => src.Category != null ? src.Category.Name : string.Empty))
+            .ForMember(dest => dest.Tags, opt =>
+                opt.MapFrom(src => src.CollectibleTags.Select(ct => ct.Tag)));
+
         CreateMap<string, Attributes>().ConvertUsing(src => new Attributes { Metadata = src });
 
         CreateMap<Attributes, string>().ConvertUsing(src => src.Metadata);

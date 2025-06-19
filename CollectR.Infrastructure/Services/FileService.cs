@@ -31,9 +31,10 @@ public sealed class FileService(IOptions<ImageRoot> root) : IFileService
         return fileName;
     }
 
-    public bool DeleteFileInFolder(string fileName, string folder)
+    public bool DeleteFile(string fileName)
     {
-        string fullPath = root.Value.Path + fileName;
+        fileName = fileName.TrimStart(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+        string fullPath = Path.Combine(root.Value.Path, fileName);
         if (File.Exists(fullPath))
         {
             File.Delete(fullPath);

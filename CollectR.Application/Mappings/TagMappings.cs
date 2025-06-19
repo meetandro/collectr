@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using CollectR.Application.Contracts.Models;
 using CollectR.Application.Features.Collections.Queries.GetTagsForCollection;
 using CollectR.Application.Features.Tags.Commands.CreateTag;
 using CollectR.Application.Features.Tags.Commands.UpdateTag;
@@ -12,6 +13,8 @@ internal sealed class TagMappings : Profile
 {
     public TagMappings()
     {
+        CreateMap<Tag, TagDto>();
+
         CreateMap<CreateTagCommand, Tag>();
 
         CreateMap<UpdateTagCommand, Tag>();

@@ -43,7 +43,7 @@ internal sealed class UpdateCollectibleCommandHandler(
             {
                 if (!request.ExistingImageUris.Contains(image.Uri))
                 {
-                    fileService.DeleteFileInFolder(image.Uri, "images");
+                    fileService.DeleteFile(image.Uri, "images");
                     await imageRepository.DeleteAsync(image.Id);
                 }
             }
