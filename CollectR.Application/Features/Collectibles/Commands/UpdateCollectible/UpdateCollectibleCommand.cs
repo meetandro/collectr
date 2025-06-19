@@ -19,6 +19,6 @@ public sealed record UpdateCollectibleCommand(
     Condition? Condition,
     string? Metadata,
     Guid CategoryId,
-    string ExistingImageUris,
+    string? ExistingImageUris,
     IFormFileCollection? NewImages
 ) : ICommand<Result<Unit>>;

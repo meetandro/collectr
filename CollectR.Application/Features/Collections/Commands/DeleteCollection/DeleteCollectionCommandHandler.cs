@@ -28,7 +28,7 @@ internal sealed class DeleteCollectionCommandHandler(
 
         foreach (var image in images)
         {
-            fileService.DeleteFile(image.Uri, "images");
+            fileService.DeleteFile(image.Uri);
         }
 
         await collectionRepository.DeleteAsync(request.Id);

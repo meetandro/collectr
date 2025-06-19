@@ -52,19 +52,27 @@ public sealed class UpdateCollectibleCommandValidator : AbstractValidator<Update
         RuleFor(x => x.Metadata)
             .Must(BeValidKeyValueJson)
             .WithMessage("Metadata must be a valid JSON object containing only key-value pairs.");
+
+        RuleFor(x => x.ExistingImageUris)
+            .Must(BeValidUriList)
+            .WithMessage("Images to keep must be a comma-separated list of valid image URIs.");
     }
 
     private static bool BeValidKeyValueJson(string value)
     {
         if (string.IsNullOrWhiteSpace(value))
+        {
             return true;
+        }
 
         try
         {
             using var doc = JsonDocument.Parse(value);
 
             if (doc.RootElement.ValueKind != JsonValueKind.Object)
+            {
                 return false;
+            }
 
             foreach (var property in doc.RootElement.EnumerateObject())
             {
@@ -88,5 +96,27 @@ public sealed class UpdateCollectibleCommandValidator : AbstractValidator<Update
         {
             return false;
         }
+    }
+
+    private bool BeValidUriList(string? uris)
+    {
+        if (string.IsNullOrWhiteSpace(uris))
+        {
+            return true;
+        }
+
+        var split = uris.Split(',').ToArray();
+
+        if (split.Any(string.IsNullOrWhiteSpace))
+        {
+            return false;
+        }
+
+        if (split.Any(u => !u.StartsWith("/images/")))
+        {
+            return false;
+        }
+
+        return true;
     }
 }

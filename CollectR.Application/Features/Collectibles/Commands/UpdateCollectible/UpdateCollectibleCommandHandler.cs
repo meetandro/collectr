@@ -8,7 +8,7 @@ using CollectR.Application.Contracts.Services;
 using CollectR.Domain;
 
 namespace CollectR.Application.Features.Collectibles.Commands.UpdateCollectible;
-//TODO : Further testing requied, what if i only assign id? will i be able to break free from the image repo?
+
 internal sealed class UpdateCollectibleCommandHandler(
     ICollectibleRepository collectibleRepository,
     IImageRepository imageRepository,
@@ -30,20 +30,15 @@ internal sealed class UpdateCollectibleCommandHandler(
 
         mapper.Map(request, collectible);
 
-        string[] uris = request.ExistingImageUris.Split(',');
+        string[] imageUrisToKeep = request.ExistingImageUris?.Split(',') ?? [];
 
-        if (
-            collectible.Images is not null
-            && collectible.Images.Count > 0
-            && request.ExistingImageUris is not null
-            && uris.Length != 0
-        )
+        if (collectible.Images is not null && collectible.Images.Count > 0)
         {
             foreach (var image in collectible.Images)
             {
-                if (!request.ExistingImageUris.Contains(image.Uri))
+                if (request.ExistingImageUris is null || !imageUrisToKeep.Contains(image.Uri))
                 {
-                    fileService.DeleteFile(image.Uri, "images");
+                    fileService.DeleteFile(image.Uri);
                     await imageRepository.DeleteAsync(image.Id);
                 }
             }
