@@ -2,7 +2,7 @@
 
 namespace CollectR.Application.Features.Collectibles.Queries.GetCollectibles;
 
-internal sealed record GetCollectiblesQueryResponse(
+public sealed record GetCollectiblesQueryResponse(
     Guid Id,
     string Title,
     string? Description,

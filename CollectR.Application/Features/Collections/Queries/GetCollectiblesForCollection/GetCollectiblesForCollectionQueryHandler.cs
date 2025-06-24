@@ -2,6 +2,7 @@
 using AutoMapper.QueryableExtensions;
 using CollectR.Application.Abstractions;
 using CollectR.Application.Common;
+using CollectR.Application.Common.Result;
 using CollectR.Application.Contracts.Persistence;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,10 +14,10 @@ internal sealed class GetCollectiblesForCollectionQueryHandler(
 )
     : IQueryHandler<
         GetCollectiblesForCollectionQuery,
-        PaginatedList<GetCollectiblesForCollectionQueryResponse>
+        Result<PaginatedList<GetCollectiblesForCollectionQueryResponse>>
     >
 {
-    public async Task<PaginatedList<GetCollectiblesForCollectionQueryResponse>> Handle(
+    public async Task<Result<PaginatedList<GetCollectiblesForCollectionQueryResponse>>> Handle(
         GetCollectiblesForCollectionQuery request,
         CancellationToken cancellationToken
     )

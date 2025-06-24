@@ -1,5 +1,6 @@
 ﻿using CollectR.Application.Abstractions;
 using CollectR.Application.Common;
+using CollectR.Application.Common.Result;
 
 namespace CollectR.Application.Features.Collections.Queries.GetCollectiblesForCollection;
 
@@ -20,4 +21,4 @@ public sealed record GetCollectiblesForCollectionQuery(
     bool? IsCollected = null,
     string? SortBy = null,
     string? SortOrder = null
-) : IQuery<PaginatedList<GetCollectiblesForCollectionQueryResponse>>;
+) : IQuery<Result<PaginatedList<GetCollectiblesForCollectionQueryResponse>>>;

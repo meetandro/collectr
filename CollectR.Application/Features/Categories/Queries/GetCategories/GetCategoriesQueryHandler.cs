@@ -1,15 +1,16 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using CollectR.Application.Abstractions;
+using CollectR.Application.Common.Result;
 using CollectR.Application.Contracts.Persistence;
 using Microsoft.EntityFrameworkCore;
 
 namespace CollectR.Application.Features.Categories.Queries.GetCategories;
 
 internal sealed class GetCategoriesQueryHandler(IApplicationDbContext context, IMapper mapper)
-    : IQueryHandler<GetCategoriesQuery, IEnumerable<GetCategoriesQueryResponse>>
+    : IQueryHandler<GetCategoriesQuery, Result<IEnumerable<GetCategoriesQueryResponse>>>
 {
-    public async Task<IEnumerable<GetCategoriesQueryResponse>> Handle(
+    public async Task<Result<IEnumerable<GetCategoriesQueryResponse>>> Handle(
         GetCategoriesQuery request,
         CancellationToken cancellationToken
     )

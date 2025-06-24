@@ -7,15 +7,17 @@ using CollectR.Application.Contracts.Services;
 
 namespace CollectR.Application.Features.Collections.Commands.ImportCollection;
 
-internal sealed class ImportCollectionCommandHandler(IImportService importService)
-    : ICommandHandler<ImportCollectionCommand, Result<Unit>>
+internal sealed class ImportCollectionCommandHandler(
+    IFileService fileService,
+    IImportService importService
+) : ICommandHandler<ImportCollectionCommand, Result<Unit>>
 {
     public async Task<Result<Unit>> Handle(
         ImportCollectionCommand request,
         CancellationToken cancellationToken
     )
     {
-        var extension = Path.GetExtension(request.FileName).ToLowerInvariant();
+        var extension = Path.GetExtension(request.File.FileName).ToLowerInvariant();
 
         var format = FormatHelper.GetFormatFromString(extension);
 
@@ -24,11 +26,13 @@ internal sealed class ImportCollectionCommandHandler(IImportService importServic
             return FileErrors.UnsupportedFormat(extension);
         }
 
+        var content = await fileService.ConvertToByteArrayAsync(request.File);
+        
         var result = format switch
         {
-            Format.Excel => await importService.ImportFromExcel(request.Content, cancellationToken),
-            Format.Json => await importService.ImportFromJson(request.Content, cancellationToken),
-            Format.Xml => await importService.ImportFromXml(request.Content, cancellationToken),
+            Format.Excel => await importService.ImportFromExcel(content, cancellationToken),
+            Format.Json => await importService.ImportFromJson(content, cancellationToken),
+            Format.Xml => await importService.ImportFromXml(content, cancellationToken),
             _ => false
         };
 

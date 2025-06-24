@@ -1,5 +1,4 @@
 ﻿using CollectR.Api.Infrastructure;
-using CollectR.Application.Contracts.Services;
 using CollectR.Application.Features.Collections.Commands.CreateCollection;
 using CollectR.Application.Features.Collections.Commands.DeleteCollection;
 using CollectR.Application.Features.Collections.Commands.ImportCollection;
@@ -10,7 +9,6 @@ using CollectR.Application.Features.Collections.Queries.GetCollectionById;
 using CollectR.Application.Features.Collections.Queries.GetCollections;
 using CollectR.Application.Features.Collections.Queries.GetTagsForCollection;
 using MediatR;
-using Microsoft.AspNetCore.Mvc;
 
 namespace CollectR.Api.Endpoints;
 
@@ -39,56 +37,50 @@ public static class CollectionEndpoints
         root.MapDelete("{id}", DeleteCollection);
     }
 
-    public static async Task<IResult> GetCollections(IMediator mediator)
+    private static async Task<IResult> GetCollections(IMediator mediator)
     {
         var result = await mediator.Send(new GetCollectionsQuery());
-        return Results.Ok(result);
+        return ApiResult.FromResult(result);
     }
 
-    public static async Task<IResult> GetCollectionById(Guid id, IMediator mediator)
+    private static async Task<IResult> GetCollectionById(Guid id, IMediator mediator)
     {
         var result = await mediator.Send(new GetCollectionByIdQuery(id));
         return ApiResult.FromResult(result);
     }
 
-    public static async Task<IResult> GetCollectiblesForCollection(
+    private static async Task<IResult> GetCollectiblesForCollection(
         [AsParameters] GetCollectiblesForCollectionQuery query,
         IMediator mediator
     )
     {
         var result = await mediator.Send(query);
-        return Results.Ok(result);
+        return ApiResult.FromResult(result);
     }
 
-    public static async Task<IResult> GetTagsForCollection(Guid id, IMediator mediator)
+    private static async Task<IResult> GetTagsForCollection(Guid id, IMediator mediator)
     {
         var result = await mediator.Send(new GetTagsForCollectionQuery(id));
-        return Results.Ok(result);
+        return ApiResult.FromResult(result);
     }
 
-    public static async Task<IResult> ExportCollection(Guid id, string format, IMediator mediator)
+    private static async Task<IResult> ExportCollection(Guid id, string format, IMediator mediator)
     {
         var result = await mediator.Send(new ExportCollectionQuery(id, format));
         return ApiResult.FromResult(result, value => Results.File(value.FileContents, value.ContentType, value.FileName));
     }
 
-    public static async Task<IResult> ImportCollection(
+    private static async Task<IResult> ImportCollection(
         IFormFile file,
-        IFileService fileService,
         IMediator mediator
     )
     {
-        var result = await mediator.Send(
-            new ImportCollectionCommand(
-                await fileService.ConvertToByteArrayAsync(file),
-                file.FileName
-            )
-        );
+        var result = await mediator.Send(new ImportCollectionCommand(file));
         return ApiResult.FromResult(result);
     }
 
-    public static async Task<IResult> CreateCollection(
-        [FromBody] CreateCollectionCommand command,
+    private static async Task<IResult> CreateCollection(
+        CreateCollectionCommand command,
         IMediator mediator
     )
     {
@@ -96,8 +88,8 @@ public static class CollectionEndpoints
         return ApiResult.FromResult(result);
     }
 
-    public static async Task<IResult> UpdateCollection(
-        [FromBody] UpdateCollectionCommand command,
+    private static async Task<IResult> UpdateCollection(
+        UpdateCollectionCommand command,
         IMediator mediator
     )
     {
@@ -105,7 +97,7 @@ public static class CollectionEndpoints
         return ApiResult.FromResult(result);
     }
 
-    public static async Task<IResult> DeleteCollection(Guid id, IMediator mediator)
+    private static async Task<IResult> DeleteCollection(Guid id, IMediator mediator)
     {
         var result = await mediator.Send(new DeleteCollectionCommand(id));
         return ApiResult.FromResult(result);

@@ -5,7 +5,6 @@ using CollectR.Application.Features.Categories.Commands.UpdateCategory;
 using CollectR.Application.Features.Categories.Queries.GetCategories;
 using CollectR.Application.Features.Categories.Queries.GetCategoryById;
 using MediatR;
-using Microsoft.AspNetCore.Mvc;
 
 namespace CollectR.Api.Endpoints;
 
@@ -26,20 +25,20 @@ public static class CategoryEndpoints
         root.MapDelete("{id}", DeleteCategory);
     }
 
-    public static async Task<IResult> GetCategories(IMediator mediator)
+    private static async Task<IResult> GetCategories(IMediator mediator)
     {
         var result = await mediator.Send(new GetCategoriesQuery());
-        return Results.Ok(result);
+        return ApiResult.FromResult(result);
     }
 
-    public static async Task<IResult> GetCategoryById(Guid id, IMediator mediator)
+    private static async Task<IResult> GetCategoryById(Guid id, IMediator mediator)
     {
         var result = await mediator.Send(new GetCategoryByIdQuery(id));
         return ApiResult.FromResult(result);
     }
 
-    public static async Task<IResult> CreateCategory(
-        [FromBody] CreateCategoryCommand command,
+    private static async Task<IResult> CreateCategory(
+        CreateCategoryCommand command,
         IMediator mediator
     )
     {
@@ -47,8 +46,8 @@ public static class CategoryEndpoints
         return ApiResult.FromResult(result);
     }
 
-    public static async Task<IResult> UpdateCategory(
-        [FromBody] UpdateCategoryCommand command,
+    private static async Task<IResult> UpdateCategory(
+        UpdateCategoryCommand command,
         IMediator mediator
     )
     {
@@ -56,7 +55,7 @@ public static class CategoryEndpoints
         return ApiResult.FromResult(result);
     }
 
-    public static async Task<IResult> DeleteCategory(Guid id, IMediator mediator)
+    private static async Task<IResult> DeleteCategory(Guid id, IMediator mediator)
     {
         var result = await mediator.Send(new DeleteCategoryCommand(id));
         return ApiResult.FromResult(result);

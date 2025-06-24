@@ -87,7 +87,7 @@ public sealed class ImportService(IApplicationDbContext context) : IImportServic
         }
     }
 
-    public static CollectionDto ParseWorksheet(IXLWorksheet worksheet)
+    private static CollectionDto ParseWorksheet(IXLWorksheet worksheet)
     {
         var collection = new CollectionDto
         {

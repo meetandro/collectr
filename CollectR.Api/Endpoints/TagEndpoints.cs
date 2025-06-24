@@ -5,7 +5,6 @@ using CollectR.Application.Features.Tags.Commands.UpdateTag;
 using CollectR.Application.Features.Tags.Queries.GetTagById;
 using CollectR.Application.Features.Tags.Queries.GetTags;
 using MediatR;
-using Microsoft.AspNetCore.Mvc;
 
 namespace CollectR.Api.Endpoints;
 
@@ -26,20 +25,20 @@ public static class TagEndpoints
         root.MapDelete("{id}", DeleteTag);
     }
 
-    public static async Task<IResult> GetTags(IMediator mediator)
+    private static async Task<IResult> GetTags(IMediator mediator)
     {
         var result = await mediator.Send(new GetTagsQuery());
-        return Results.Ok(result);
+        return ApiResult.FromResult(result);
     }
 
-    public static async Task<IResult> GetTagById(Guid id, IMediator mediator)
+    private static async Task<IResult> GetTagById(Guid id, IMediator mediator)
     {
         var result = await mediator.Send(new GetTagByIdQuery(id));
         return ApiResult.FromResult(result);
     }
 
-    public static async Task<IResult> CreateTag(
-        [FromBody] CreateTagCommand command,
+    private static async Task<IResult> CreateTag(
+        CreateTagCommand command,
         IMediator mediator
     )
     {
@@ -47,8 +46,8 @@ public static class TagEndpoints
         return ApiResult.FromResult(result);
     }
 
-    public static async Task<IResult> UpdateTag(
-        [FromBody] UpdateTagCommand command,
+    private static async Task<IResult> UpdateTag(
+        UpdateTagCommand command,
         IMediator mediator
     )
     {
@@ -56,7 +55,7 @@ public static class TagEndpoints
         return ApiResult.FromResult(result);
     }
 
-    public static async Task<IResult> DeleteTag(Guid id, IMediator mediator)
+    private static async Task<IResult> DeleteTag(Guid id, IMediator mediator)
     {
         var result = await mediator.Send(new DeleteTagCommand(id));
         return ApiResult.FromResult(result);

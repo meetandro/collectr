@@ -2,5 +2,5 @@
 
 public class Attributes
 {
-    public string Metadata { get; set; } = string.Empty;
+    public string Metadata { get; init; } = string.Empty;
 }

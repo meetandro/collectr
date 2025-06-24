@@ -28,19 +28,19 @@ public static class CollectibleEndpoints
         root.MapDelete("{id}", DeleteCollectible);
     }
 
-    public static async Task<IResult> GetCollectibles(IMediator mediator)
+    private static async Task<IResult> GetCollectibles(IMediator mediator)
     {
         var result = await mediator.Send(new GetCollectiblesQuery());
-        return Results.Ok(result);
+        return ApiResult.FromResult(result);
     }
 
-    public static async Task<IResult> GetCollectibleById(Guid id, IMediator mediator)
+    private static async Task<IResult> GetCollectibleById(Guid id, IMediator mediator)
     {
         var result = await mediator.Send(new GetCollectibleByIdQuery(id));
         return ApiResult.FromResult(result);
     }
 
-    public static async Task<IResult> CreateCollectible(
+    private static async Task<IResult> CreateCollectible(
         [AsParameters] CreateCollectibleCommand command,
         IMediator mediator
     )
@@ -49,7 +49,7 @@ public static class CollectibleEndpoints
         return ApiResult.FromResult(result);
     }
 
-    public static async Task<IResult> UpdateCollectible(
+    private static async Task<IResult> UpdateCollectible(
         [AsParameters] UpdateCollectibleCommand command,
         IMediator mediator
     )
@@ -58,7 +58,7 @@ public static class CollectibleEndpoints
         return ApiResult.FromResult(result);
     }
 
-    public static async Task<IResult> UpdateCollectibleTags(
+    private static async Task<IResult> UpdateCollectibleTags(
         UpdateCollectibleTagsCommand command,
         IMediator mediator
     )
@@ -67,7 +67,7 @@ public static class CollectibleEndpoints
         return ApiResult.FromResult(result);
     }
 
-    public static async Task<IResult> DeleteCollectible(Guid id, IMediator mediator)
+    private static async Task<IResult> DeleteCollectible(Guid id, IMediator mediator)
     {
         var result = await mediator.Send(new DeleteCollectibleCommand(id));
         return ApiResult.FromResult(result);

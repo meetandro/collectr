@@ -4,17 +4,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CollectR.Persistence.Repositories;
 
-public class Repository<TEntity> : IRepository<TEntity>
+public class Repository<TEntity>(IApplicationDbContext context) : IRepository<TEntity>
     where TEntity : Entity
 {
-    private readonly IApplicationDbContext _context;
-    private readonly DbSet<TEntity> _dbSet;
-
-    public Repository(IApplicationDbContext context)
-    {
-        _context = context;
-        _dbSet = _context.Set<TEntity>();
-    }
+    private readonly DbSet<TEntity> _dbSet = context.Set<TEntity>();
 
     public async Task<IEnumerable<TEntity>> GetByIdsAsync(IEnumerable<Guid> ids)
     {

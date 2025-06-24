@@ -4,10 +4,10 @@ namespace CollectR.Domain;
 
 public class Image : Entity
 {
-    public string Uri { get; set; } = string.Empty;
+    public string Uri { get; init; } = string.Empty;
 
-    public string? Alt { get; set; }
+    public string? Alt { get; init; }
 
-    public Guid CollectibleId { get; set; }
-    public Collectible? Collectible { get; set; }
+    public Guid CollectibleId { get; init; }
+    public Collectible? Collectible { get; init; }
 }

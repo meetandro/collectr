@@ -6,6 +6,6 @@ public sealed class ImportCollectionCommandValidator : AbstractValidator<ImportC
 {
     public ImportCollectionCommandValidator()
     {
-        RuleFor(x => x.FileName).NotEmpty().WithMessage("File name is required.");
+        RuleFor(x => x.File.FileName).NotEmpty().WithMessage("File name is required.");
     }
 }

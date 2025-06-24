@@ -4,12 +4,12 @@ namespace CollectR.Domain;
 
 public class Tag : Entity
 {
-    public string Name { get; set; } = string.Empty;
+    public string Name { get; init; } = string.Empty;
 
-    public string Hex { get; set; } = "#FFFFFF";
+    public string Hex { get; init; } = "#FFFFFF";
 
-    public Guid CollectionId { get; set; }
-    public Collection? Collection { get; set; }
+    public Guid CollectionId { get; init; }
+    public Collection? Collection { get; init; }
 
-    public ICollection<CollectibleTag> CollectibleTags { get; set; } = [];
+    public ICollection<CollectibleTag> CollectibleTags { get; init; } = [];
 }

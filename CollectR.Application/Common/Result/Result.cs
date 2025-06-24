@@ -44,7 +44,7 @@ public static class Result
 {
     public static Result<Unit> Success() => Result<Unit>.Success(Unit.Value);
 
-    public static Result<T> Success<T>(T value) => Result<T>.Success(value);
+    public static Result<TValue> Success<TValue>(TValue value) => Result<TValue>.Success(value);
 
-    public static Result<T> Failure<T>(Error error) => Result<T>.Failure(error);
+    public static Result<TValue> Failure<TValue>(Error error) => Result<TValue>.Failure(error);
 }

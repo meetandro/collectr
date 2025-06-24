@@ -5,12 +5,12 @@ namespace CollectR.Api.Infrastructure;
 
 public static class ApiResult
 {
-    public static IResult FromResult<T>(Result<T> result)
+    public static IResult FromResult<TValue>(Result<TValue> result)
     {
-        return result.Match(onSuccess: value => Results.Ok(value), onFailure: MapErrorToResponse);
+        return result.Match(onSuccess: Results.Ok, onFailure: MapErrorToResponse);
     }
 
-    public static IResult FromResult<T>(Result<T> result, Func<T, IResult> onSuccess)
+    public static IResult FromResult<TValue>(Result<TValue> result, Func<TValue, IResult> onSuccess)
     {
         return result.Match(onSuccess: onSuccess, onFailure: MapErrorToResponse);
     }

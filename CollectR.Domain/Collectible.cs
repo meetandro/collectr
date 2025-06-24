@@ -5,33 +5,33 @@ namespace CollectR.Domain;
 
 public class Collectible : Entity
 {
-    public string Title { get; set; } = string.Empty;
+    public string Title { get; init; } = string.Empty;
 
-    public string? Description { get; set; }
+    public string? Description { get; init; }
 
-    public string? Currency { get; set; }
+    public string? Currency { get; init; }
 
-    public decimal? Value { get; set; }
+    public decimal? Value { get; init; }
 
-    public DateTime? AcquiredDate { get; set; }
+    public DateTime? AcquiredDate { get; init; }
 
-    public bool IsCollected { get; set; } = false;
+    public bool IsCollected { get; init; } = false;
 
-    public int SortIndex { get; set; } = 100;
+    public int SortIndex { get; init; } = 100;
 
-    public Color? Color { get; set; }
+    public Color? Color { get; init; }
 
-    public Condition? Condition { get; set; }
+    public Condition? Condition { get; init; }
 
-    public Attributes? Attributes { get; set; }
+    public Attributes? Attributes { get; init; }
 
-    public Guid CategoryId { get; set; }
-    public Category? Category { get; set; }
+    public Guid CategoryId { get; init; }
+    public Category? Category { get; init; }
 
-    public Guid CollectionId { get; set; }
-    public Collection? Collection { get; set; }
+    public Guid CollectionId { get; init; }
+    public Collection? Collection { get; init; }
 
-    public ICollection<CollectibleTag> CollectibleTags { get; set; } = [];
+    public ICollection<CollectibleTag> CollectibleTags { get; init; } = [];
 
-    public ICollection<Image> Images { get; set; } = [];
+    public ICollection<Image> Images { get; init; } = [];
 }

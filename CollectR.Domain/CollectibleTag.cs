@@ -2,9 +2,9 @@
 
 public class CollectibleTag
 {
-    public Guid CollectibleId { get; set; }
-    public Collectible? Collectible { get; set; }
+    public Guid CollectibleId { get; init; }
+    public Collectible? Collectible { get; init; }
 
-    public Guid TagId { get; set; }
-    public Tag? Tag { get; set; }
+    public Guid TagId { get; init; }
+    public Tag? Tag { get; init; }
 }
