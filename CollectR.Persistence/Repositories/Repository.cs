@@ -11,7 +11,7 @@ public class Repository<TEntity>(IApplicationDbContext context) : IRepository<TE
 
     public async Task<IEnumerable<TEntity>> GetByIdsAsync(IEnumerable<Guid> ids)
     {
-        var entities = await _dbSet.Where(x => ids.Contains(x.Id)).ToListAsync();
+        List<TEntity> entities = await _dbSet.Where(x => ids.Contains(x.Id)).ToListAsync();
         return entities;
     }
 

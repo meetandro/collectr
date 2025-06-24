@@ -37,19 +37,13 @@ public static class TagEndpoints
         return ApiResult.FromResult(result);
     }
 
-    private static async Task<IResult> CreateTag(
-        CreateTagCommand command,
-        IMediator mediator
-    )
+    private static async Task<IResult> CreateTag(CreateTagCommand command, IMediator mediator)
     {
         var result = await mediator.Send(command);
         return ApiResult.FromResult(result);
     }
 
-    private static async Task<IResult> UpdateTag(
-        UpdateTagCommand command,
-        IMediator mediator
-    )
+    private static async Task<IResult> UpdateTag(UpdateTagCommand command, IMediator mediator)
     {
         var result = await mediator.Send(command);
         return ApiResult.FromResult(result);

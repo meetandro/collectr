@@ -67,13 +67,13 @@ public static class CollectionEndpoints
     private static async Task<IResult> ExportCollection(Guid id, string format, IMediator mediator)
     {
         var result = await mediator.Send(new ExportCollectionQuery(id, format));
-        return ApiResult.FromResult(result, value => Results.File(value.FileContents, value.ContentType, value.FileName));
+        return ApiResult.FromResult(
+            result,
+            value => Results.File(value.FileContents, value.ContentType, value.FileName)
+        );
     }
 
-    private static async Task<IResult> ImportCollection(
-        IFormFile file,
-        IMediator mediator
-    )
+    private static async Task<IResult> ImportCollection(IFormFile file, IMediator mediator)
     {
         var result = await mediator.Send(new ImportCollectionCommand(file));
         return ApiResult.FromResult(result);
