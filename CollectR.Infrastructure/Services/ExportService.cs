@@ -18,8 +18,7 @@ public sealed class ExportService : IExportService
         {
             Format.Excel => ExportAsExcel(collection),
             Format.Json => ExportAsJson(collection),
-            Format.Xml => ExportAsXml(collection),
-            _ => throw new NotSupportedException("Unsupported format."),
+            Format.Xml => ExportAsXml(collection)
         };
     }
 

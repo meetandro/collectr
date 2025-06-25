@@ -57,8 +57,7 @@ internal sealed class ExportCollectionQueryHandler(
                 exportService.Export(format, collection),
                 "application/xml",
                 $"Collection-{collection.Name}.xml"
-            ),
-            _ => throw new InvalidOperationException("Unexpected format"),
+            )
         };
 
         var result = new ExportCollectionQueryResponse(fileContents, contentType, fileName);

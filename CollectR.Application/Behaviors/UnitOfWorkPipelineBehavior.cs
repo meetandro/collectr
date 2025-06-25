@@ -4,12 +4,11 @@ using MediatR;
 
 namespace CollectR.Application.Behaviors;
 
-internal sealed class UnitOfWorkPipelineBehavior<TRequest, TResponse>(IApplicationDbContext context)
-    : IPipelineBehavior<TRequest, TResponse>
+internal sealed class UnitOfWorkPipelineBehavior<TRequest, TResponse>(
+    IApplicationDbContext context
+) : IPipelineBehavior<TRequest, TResponse>
     where TRequest : class
 {
-    private readonly IApplicationDbContext _context = context;
-
     public async Task<TResponse> Handle(
         TRequest request,
         RequestHandlerDelegate<TResponse> next,
@@ -23,7 +22,7 @@ internal sealed class UnitOfWorkPipelineBehavior<TRequest, TResponse>(IApplicati
 
         var response = await next();
 
-        await _context.SaveChangesAsync(cancellationToken);
+        await context.SaveChangesAsync(cancellationToken);
 
         return response;
     }

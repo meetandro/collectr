@@ -17,7 +17,7 @@ internal sealed class MergeCollectionCommandHandler(
         CancellationToken cancellationToken
     )
     {
-        var extension = Path.GetExtension(request.File.FileName).ToLowerInvariant();
+        var extension = Path.GetExtension(request.File.FileName);
 
         var format = FormatHelper.GetFormatFromString(extension);
 
@@ -27,29 +27,8 @@ internal sealed class MergeCollectionCommandHandler(
         }
 
         var content = await fileService.ConvertToByteArrayAsync(request.File);
-
-        var result = format switch
-        {
-            Format.Excel => await importService.MergeAsync(
-                format,
-                content,
-                request.Id,
-                cancellationToken
-            ),
-            Format.Json => await importService.MergeAsync(
-                format,
-                content,
-                request.Id,
-                cancellationToken
-            ),
-            Format.Xml => await importService.MergeAsync(
-                format,
-                content,
-                request.Id,
-                cancellationToken
-            ),
-            _ => false,
-        };
+        
+        var result = await importService.MergeAsync(format, content, request.Id, cancellationToken);
 
         if (!result)
         {

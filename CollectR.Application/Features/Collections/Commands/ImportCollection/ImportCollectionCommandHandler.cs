@@ -17,7 +17,7 @@ internal sealed class ImportCollectionCommandHandler(
         CancellationToken cancellationToken
     )
     {
-        var extension = Path.GetExtension(request.File.FileName).ToLowerInvariant();
+        var extension = Path.GetExtension(request.File.FileName);
 
         var format = FormatHelper.GetFormatFromString(extension);
 
@@ -27,14 +27,8 @@ internal sealed class ImportCollectionCommandHandler(
         }
 
         var content = await fileService.ConvertToByteArrayAsync(request.File);
-
-        var result = format switch
-        {
-            Format.Excel => await importService.ImportAsync(format, content, cancellationToken),
-            Format.Json => await importService.ImportAsync(format, content, cancellationToken),
-            Format.Xml => await importService.ImportAsync(format, content, cancellationToken),
-            _ => false,
-        };
+        
+        var result = await importService.ImportAsync(format, content, cancellationToken);
 
         if (!result)
         {
