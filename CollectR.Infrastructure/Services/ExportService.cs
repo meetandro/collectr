@@ -3,6 +3,7 @@ using System.Text.Json;
 using System.Xml;
 using System.Xml.Serialization;
 using ClosedXML.Excel;
+using CollectR.Application.Common.Format;
 using CollectR.Application.Contracts.Models;
 using CollectR.Application.Contracts.Services;
 using CollectR.Infrastructure.Common;
@@ -11,30 +12,41 @@ namespace CollectR.Infrastructure.Services;
 
 public sealed class ExportService : IExportService
 {
-    public Task<byte[]> ExportAsExcel(CollectionDto collection)
+    public byte[] Export(Format format, CollectionDto collection)
+    {
+        return format switch
+        {
+            Format.Excel => ExportAsExcel(collection),
+            Format.Json => ExportAsJson(collection),
+            Format.Xml => ExportAsXml(collection),
+            _ => throw new NotSupportedException("Unsupported format."),
+        };
+    }
+
+    private static byte[] ExportAsExcel(CollectionDto collectionDto)
     {
         using var workbook = new XLWorkbook();
 
-        WorkWithCollection.AddWorksheet(workbook, collection);
+        WorkWithCollection.AddWorksheet(workbook, collectionDto);
 
         using var stream = new MemoryStream();
 
         workbook.SaveAs(stream);
 
-        return Task.FromResult(stream.ToArray());
+        return stream.ToArray();
     }
 
-    public Task<byte[]> ExportAsJson(CollectionDto collection)
+    private static byte[] ExportAsJson(CollectionDto collectionDto)
     {
         var json = JsonSerializer.Serialize(
-            collection,
+            collectionDto,
             new JsonSerializerOptions { WriteIndented = true }
         );
 
-        return Task.FromResult(Encoding.UTF8.GetBytes(json));
+        return Encoding.UTF8.GetBytes(json);
     }
 
-    public Task<byte[]> ExportAsXml(CollectionDto collection)
+    private static byte[] ExportAsXml(CollectionDto collectionDto)
     {
         var serializer = new XmlSerializer(typeof(CollectionDto));
 
@@ -52,9 +64,9 @@ public sealed class ExportService : IExportService
             )
         )
         {
-            serializer.Serialize(xmlWriter, collection);
+            serializer.Serialize(xmlWriter, collectionDto);
         }
 
-        return Task.FromResult(ms.ToArray());
+        return ms.ToArray();
     }
 }

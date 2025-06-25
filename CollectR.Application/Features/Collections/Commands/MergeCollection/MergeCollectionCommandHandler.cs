@@ -5,15 +5,15 @@ using CollectR.Application.Common.Format;
 using CollectR.Application.Common.Result;
 using CollectR.Application.Contracts.Services;
 
-namespace CollectR.Application.Features.Collections.Commands.ImportCollection;
+namespace CollectR.Application.Features.Collections.Commands.MergeCollection;
 
-internal sealed class ImportCollectionCommandHandler(
+internal sealed class MergeCollectionCommandHandler(
     IFileService fileService,
     IImportService importService
-) : ICommandHandler<ImportCollectionCommand, Result<Unit>>
+) : ICommandHandler<MergeCollectionCommand, Result<Unit>>
 {
     public async Task<Result<Unit>> Handle(
-        ImportCollectionCommand request,
+        MergeCollectionCommand request,
         CancellationToken cancellationToken
     )
     {
@@ -30,9 +30,24 @@ internal sealed class ImportCollectionCommandHandler(
 
         var result = format switch
         {
-            Format.Excel => await importService.ImportAsync(format, content, cancellationToken),
-            Format.Json => await importService.ImportAsync(format, content, cancellationToken),
-            Format.Xml => await importService.ImportAsync(format, content, cancellationToken),
+            Format.Excel => await importService.MergeAsync(
+                format,
+                content,
+                request.Id,
+                cancellationToken
+            ),
+            Format.Json => await importService.MergeAsync(
+                format,
+                content,
+                request.Id,
+                cancellationToken
+            ),
+            Format.Xml => await importService.MergeAsync(
+                format,
+                content,
+                request.Id,
+                cancellationToken
+            ),
             _ => false,
         };
 
@@ -44,3 +59,4 @@ internal sealed class ImportCollectionCommandHandler(
         return Result.Success();
     }
 }
+

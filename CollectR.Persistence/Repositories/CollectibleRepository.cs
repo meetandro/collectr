@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CollectR.Persistence.Repositories;
 
-public sealed class CollectibleRespository(IApplicationDbContext context)
+public sealed class CollectibleRepository(IApplicationDbContext context)
     : Repository<Collectible>(context),
         ICollectibleRepository
 {

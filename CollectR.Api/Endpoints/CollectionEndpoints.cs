@@ -2,6 +2,7 @@
 using CollectR.Application.Features.Collections.Commands.CreateCollection;
 using CollectR.Application.Features.Collections.Commands.DeleteCollection;
 using CollectR.Application.Features.Collections.Commands.ImportCollection;
+using CollectR.Application.Features.Collections.Commands.MergeCollection;
 using CollectR.Application.Features.Collections.Commands.UpdateCollection;
 using CollectR.Application.Features.Collections.Queries.ExportCollection;
 using CollectR.Application.Features.Collections.Queries.GetCollectiblesForCollection;
@@ -29,6 +30,8 @@ public static class CollectionEndpoints
         root.MapGet("{id}/export", ExportCollection);
 
         root.MapPost("import", ImportCollection).DisableAntiforgery();
+
+        root.MapPost("{id}/merge", MergeCollection).DisableAntiforgery();
 
         root.MapPost("", CreateCollection);
 
@@ -76,6 +79,15 @@ public static class CollectionEndpoints
     private static async Task<IResult> ImportCollection(IFormFile file, IMediator mediator)
     {
         var result = await mediator.Send(new ImportCollectionCommand(file));
+        return ApiResult.FromResult(result);
+    }
+
+    private static async Task<IResult> MergeCollection(
+        [AsParameters] MergeCollectionCommand command,
+        IMediator mediator
+    )
+    {
+        var result = await mediator.Send(command);
         return ApiResult.FromResult(result);
     }
 

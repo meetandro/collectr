@@ -44,17 +44,17 @@ internal sealed class ExportCollectionQueryHandler(
         (byte[] fileContents, string contentType, string fileName) = format switch
         {
             Format.Excel => (
-                await exportService.ExportAsExcel(collection),
+                exportService.Export(format, collection),
                 "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
                 $"Collection-{collection.Name}.xlsx"
             ),
             Format.Json => (
-                await exportService.ExportAsJson(collection),
+                exportService.Export(format, collection),
                 "application/json",
                 $"Collection-{collection.Name}.json"
             ),
             Format.Xml => (
-                await exportService.ExportAsXml(collection),
+                exportService.Export(format, collection),
                 "application/xml",
                 $"Collection-{collection.Name}.xml"
             ),

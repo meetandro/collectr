@@ -6,13 +6,13 @@ namespace CollectR.Infrastructure.Common;
 
 internal static class WorkWithCollection
 {
-    public static IXLWorksheet AddWorksheet(XLWorkbook workbook, CollectionDto collection)
+    public static IXLWorksheet AddWorksheet(XLWorkbook workbook, CollectionDto collectionDto)
     {
-        var worksheet = workbook
-            .Worksheets.Add(collection.Name)
+        var worksheet = workbook.Worksheets
+            .Add(collectionDto.Name)
             .SetTabColor(XLColor.CornflowerBlue);
 
-        worksheet.Cell(1, 1).Value = collection?.Description ?? "Collection";
+        worksheet.Cell(1, 1).Value = collectionDto?.Description ?? "Collection";
 
         worksheet.Cell(2, 1).Value = "Title";
         worksheet.Cell(2, 2).Value = "Description";
@@ -31,23 +31,23 @@ internal static class WorkWithCollection
 
         int row = 3;
 
-        foreach (var collectible in collection.Collectibles)
+        foreach (var collectibleDto in collectionDto.Collectibles)
         {
-            worksheet.Cell(row, 1).Value = collectible.Title;
-            worksheet.Cell(row, 2).Value = collectible.Description;
-            worksheet.Cell(row, 3).Value = collectible.Currency;
-            worksheet.Cell(row, 4).Value = collectible.Value;
-            worksheet.Cell(row, 5).Value = collectible.AcquiredDate?.ToString("yyyy-MM-dd") ?? "";
-            worksheet.Cell(row, 6).Value = collectible.IsCollected;
-            worksheet.Cell(row, 7).Value = collectible.SortIndex;
-            worksheet.Cell(row, 8).Value = collectible.Color?.ToString() ?? "";
-            worksheet.Cell(row, 9).Value = collectible.Condition?.ToString() ?? "";
-            worksheet.Cell(row, 10).Value = collectible.Metadata;
-            worksheet.Cell(row, 11).Value = collectible.Category;
+            worksheet.Cell(row, 1).Value = collectibleDto.Title;
+            worksheet.Cell(row, 2).Value = collectibleDto.Description;
+            worksheet.Cell(row, 3).Value = collectibleDto.Currency;
+            worksheet.Cell(row, 4).Value = collectibleDto.Value;
+            worksheet.Cell(row, 5).Value = collectibleDto.AcquiredDate?.ToString("yyyy-MM-dd") ?? "";
+            worksheet.Cell(row, 6).Value = collectibleDto.IsCollected;
+            worksheet.Cell(row, 7).Value = collectibleDto.SortIndex;
+            worksheet.Cell(row, 8).Value = collectibleDto.Color?.ToString() ?? "";
+            worksheet.Cell(row, 9).Value = collectibleDto.Condition?.ToString() ?? "";
+            worksheet.Cell(row, 10).Value = collectibleDto.Metadata;
+            worksheet.Cell(row, 11).Value = collectibleDto.Category;
 
             var tags =
-                collectible.Tags.Count > 0
-                    ? string.Join(", ", collectible.Tags.Select(t => $"{t.Name} ({t.Hex})"))
+                collectibleDto.Tags.Count > 0
+                    ? string.Join(", ", collectibleDto.Tags.Select(t => $"{t.Name} ({t.Hex})"))
                     : "";
 
             worksheet.Cell(row, 12).Value = tags;
@@ -62,7 +62,7 @@ internal static class WorkWithCollection
     
     public static CollectionDto ParseWorksheet(IXLWorksheet worksheet)
     {
-        var collection = new CollectionDto
+        var collectionDto = new CollectionDto
         {
             Name = worksheet.Name,
             Description = worksheet.Cell(1, 1).GetString(),
@@ -120,7 +120,7 @@ internal static class WorkWithCollection
 
             var tagsString = worksheet.Cell(row, 12).GetString();
 
-            var tags = new List<TagDto>();
+            var tagDtos = new List<TagDto>();
 
             if (!string.IsNullOrWhiteSpace(tagsString))
             {
@@ -141,12 +141,12 @@ internal static class WorkWithCollection
                             .Substring(openParenthesesIndex + 1, closeParenthesesIndex - openParenthesesIndex - 1)
                             .Trim();
 
-                        tags.Add(new TagDto { Name = name, Hex = hex });
+                        tagDtos.Add(new TagDto { Name = name, Hex = hex });
                     }
                 }
             }
 
-            var collectible = new CollectibleDto
+            var collectibleDto = new CollectibleDto
             {
                 Title = title,
                 Description = description,
@@ -159,14 +159,14 @@ internal static class WorkWithCollection
                 Condition = condition,
                 Metadata = metadata,
                 Category = category,
-                Tags = tags,
+                Tags = tagDtos,
             };
 
-            collection.Collectibles.Add(collectible);
+            collectionDto.Collectibles.Add(collectibleDto);
 
             row++;
         }
 
-        return collection;
+        return collectionDto;
     }
 }

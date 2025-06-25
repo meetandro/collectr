@@ -15,7 +15,7 @@ public static class DependencyInjection
     )
     {
         services.AddScoped<ICategoryRepository, CategoryRepository>();
-        services.AddScoped<ICollectibleRepository, CollectibleRespository>();
+        services.AddScoped<ICollectibleRepository, CollectibleRepository>();
         services.AddScoped<ICollectionRepository, CollectionRepository>();
         services.AddScoped<IImageRepository, ImageRepository>();
         services.AddScoped<ITagRepository, TagRepository>();
