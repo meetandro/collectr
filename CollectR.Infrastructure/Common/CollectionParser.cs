@@ -40,7 +40,7 @@ internal static class CollectionParser
 
         using var ms = new MemoryStream(content);
 
-        var collectionDto = (CollectionDto)serializer.Deserialize(ms);
+        var collectionDto = (CollectionDto?)serializer.Deserialize(ms);
 
         return collectionDto;
     }

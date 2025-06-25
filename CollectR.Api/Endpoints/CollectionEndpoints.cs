@@ -67,18 +67,24 @@ public static class CollectionEndpoints
         return ApiResult.FromResult(result);
     }
 
-    private static async Task<IResult> ExportCollection(Guid id, string format, IMediator mediator)
+    private static async Task<IResult> ExportCollection(
+        [AsParameters] ExportCollectionQuery query,
+        IMediator mediator
+    )
     {
-        var result = await mediator.Send(new ExportCollectionQuery(id, format));
+        var result = await mediator.Send(query);
         return ApiResult.FromResult(
             result,
             value => Results.File(value.FileContents, value.ContentType, value.FileName)
         );
     }
 
-    private static async Task<IResult> ImportCollection(IFormFile file, IMediator mediator)
+    private static async Task<IResult> ImportCollection(
+        [AsParameters] ImportCollectionCommand command,
+        IMediator mediator
+    )
     {
-        var result = await mediator.Send(new ImportCollectionCommand(file));
+        var result = await mediator.Send(command);
         return ApiResult.FromResult(result);
     }
 

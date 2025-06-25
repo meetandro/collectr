@@ -109,7 +109,7 @@ public sealed class ImportService(IApplicationDbContext context) : IImportServic
                 Color = collectibleDto.Color,
                 Condition = collectibleDto.Condition,
                 Category = category,
-                Attributes = new Attributes { Metadata = collectibleDto.Metadata },
+                Attributes = new Attributes { Metadata = collectibleDto.Metadata ?? "{}" },
                 CategoryId = category.Id,
                 CollectionId = collection.Id,
             };
@@ -194,7 +194,7 @@ public sealed class ImportService(IApplicationDbContext context) : IImportServic
                 Category = category,
                 CategoryId = category.Id,
                 CollectionId = existingCollection.Id,
-                Attributes = new Attributes { Metadata = collectibleDto.Metadata },
+                Attributes = new Attributes { Metadata = collectibleDto.Metadata ?? "{}" },
             };
 
             foreach (var tagDto in collectibleDto.Tags)

@@ -58,7 +58,7 @@ public sealed class UpdateCollectibleCommandValidator : AbstractValidator<Update
             .WithMessage("Images to keep must be a comma-separated list of valid image URIs.");
     }
 
-    private static bool BeValidKeyValueJson(string value)
+    private static bool BeValidKeyValueJson(string? value)
     {
         if (string.IsNullOrWhiteSpace(value))
         {

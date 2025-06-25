@@ -56,10 +56,12 @@ public sealed class CreateCollectibleCommandValidator : AbstractValidator<Create
             .WithMessage("Metadata must be a valid JSON object containing only key-value pairs.");
     }
 
-    private static bool BeValidKeyValueJson(string value)
+    private static bool BeValidKeyValueJson(string? value)
     {
         if (string.IsNullOrWhiteSpace(value))
+        {
             return true;
+        }
 
         try
         {

@@ -36,11 +36,11 @@ public class Repository<TEntity>(IApplicationDbContext context) : IRepository<TE
     public async Task<bool> DeleteAsync(Guid id)
     {
         TEntity? entity = await _dbSet.FindAsync(id);
-        if (entity is not null)
+        if (entity is null)
         {
-            _dbSet.Remove(entity);
-            return true;
+            return false;
         }
-        return false;
+        _dbSet.Remove(entity);
+        return true;
     }
 }

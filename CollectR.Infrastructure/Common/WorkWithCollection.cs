@@ -12,7 +12,7 @@ internal static class WorkWithCollection
             .Add(collectionDto.Name)
             .SetTabColor(XLColor.CornflowerBlue);
 
-        worksheet.Cell(1, 1).Value = collectionDto?.Description ?? "Collection";
+        worksheet.Cell(1, 1).Value = collectionDto.Description ?? "Collection";
 
         worksheet.Cell(2, 1).Value = "Title";
         worksheet.Cell(2, 2).Value = "Description";
